@@ -14,7 +14,8 @@ agent does the work. It checks first, shows **one** confirm, and starts only aft
 
 Until the CLI is installed, reply in the language the user writes in. Once it runs, use the
 `effective` value of `config language --json` (`en` English, `ja` Japanese), and after step 5 the
-language the user picked. Use another language only when the user asks for one.
+language the user picked, for every line including status lines. Use another language only when
+the user tells you which language to reply in; writing in a language is not such a request.
 
 ## 1. Check what is already there
 

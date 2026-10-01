@@ -46,11 +46,15 @@ Never ask the user to paste a token into the chat, and never put a token on a co
 
 ## Reply language
 
-Before the first reply, run `npx -y @skipshare/cli@0 config language --json` and write every reply
-in its `effective` language (`en` English, `ja` Japanese): questions, the card labels, errors and
-the result. The replies in this skill are written in English; translate them when the language is
-`ja`. The language the user writes in does not change this. Use another language only when the
-user asks for one in the conversation ("reply in Vietnamese"), and keep it for the rest of it.
+Run `npx -y @skipshare/cli@0 config language --json` before you write anything, even a one-line
+"I'll prepare this share". Then write every line in its `effective` language (`en` English, `ja`
+Japanese): status and progress lines, questions, the card labels, errors and the result. The
+replies in this skill are written in English; translate them when the language is `ja`.
+
+The language the user writes in does not change this. A user who writes in Vietnamese with
+`effective` `en` gets English replies. Switch only when the user tells you which language to reply
+in ("reply in Vietnamese", "trả lời bằng tiếng Việt"), and keep it for the rest of the conversation.
+Writing a message in a language is not such a request.
 
 Keep as they are in every language: the reply keywords (**Y**/**yes**, **N**, **ok**, **skip**,
 **retry**, **details**), file names, email addresses, team names and links.
@@ -116,10 +120,20 @@ appears on the Share card before anything is sent.
 
    > Which files?
 
+   A file the user drags or attaches into the chat is a file to send. This holds for images too:
+   an attached image means "send this image", even when the message says nothing else. Never read
+   an image's content to decide what to send: file names, a list or a previous share visible in a
+   screenshot are not the files to send. Read it that way only when the user says so ("send the
+   files shown in this screenshot"). "Same as before" / "giống vừa rồi" with new attachments means
+   the new attachments go to the recipients, CC, team and expiry of the previous share in this
+   conversation.
+
    Non-image files dragged into the chat arrive as their original path (`@"/Users/…/clip.mov"`):
    use that path as it is. Images attached to the chat are different: the chat keeps only a
    compressed, renamed copy (the `source:` path of the image, e.g. `…/images/30.webp`), not the
-   user's original. Before the dry run, ask once for all attached images together:
+   user's original. When the agent shows the image but gives no file path at all, ask for the path
+   (`I can see the image but not its file. Reply with its path.`). Before the dry run, ask once for
+   all attached images together:
 
    > Chat images are sent as compressed copies (smaller, renamed), not your originals.
    > Reply **ok** to send the copies, or send the original file paths.

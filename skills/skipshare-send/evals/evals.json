@@ -326,6 +326,36 @@
         "The questions, card labels and result are in Japanese",
         "Keeps **skip** and **Y**/**yes** untranslated"
       ]
+    },
+    {
+      "id": 32,
+      "prompt": "gửi ~/Downloads/report.pdf cho bob@example.com  (config language --json returns effective en)",
+      "expected_output": "All replies in English, including the first status line, because writing in Vietnamese is not a request to reply in Vietnamese.",
+      "expectations": [
+        "Runs config language --json before writing any text",
+        "Every line, including status and progress lines, is in English",
+        "Does not switch to Vietnamese"
+      ]
+    },
+    {
+      "id": 33,
+      "prompt": "trả lời bằng tiếng Việt nhé. gửi ~/Downloads/report.pdf cho bob@example.com  (effective en)",
+      "expected_output": "Replies in Vietnamese for the rest of the conversation because the user asked for it.",
+      "expectations": [
+        "The card labels, questions and result are in Vietnamese",
+        "Keeps **Y**/**yes** and **skip** untranslated"
+      ]
+    },
+    {
+      "id": 34,
+      "prompt": "[Image #1] gửi tiếp giống vừa rồi  (earlier in this conversation a share went to a@example.com, CC old-owner@example.com, 3 days; the attached image is a screenshot whose content shows file names view-01.jpg … view-07.jpg)",
+      "expected_output": "The attached image itself is the one file to send, to the previous share's recipients, CC and expiry.",
+      "expectations": [
+        "The draft has exactly 1 file: the attached image",
+        "Does not add view-01.jpg … view-07.jpg or any name read from the image content",
+        "To a@example.com, CC old-owner@example.com, expiry 3 days",
+        "Asks once about sending the compressed chat copy or the original path"
+      ]
     }
   ]
 }
