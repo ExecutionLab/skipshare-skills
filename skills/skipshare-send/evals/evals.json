@@ -71,7 +71,7 @@
       "expected_output": "The real send runs with the values on the card, then a short success message.",
       "expectations": [
         "Runs `send` without `--dry-run`, with `--to a@example.com` and `--expires-in 7d`",
-        "Replies with `✅ Files shared.` followed by Recipients, Files, Expires in and Link blocks; Link is `share_url`",
+        "Replies with `✅ Files shared successfully.` followed by Recipients, Files, Expires in (days plus the local end date and time in brackets) and Download URL blocks; Download URL is `share_url`",
         "Does not print the JSON result or the exit code"
       ]
     },
@@ -164,7 +164,7 @@
       "expected_output": "Starts with the warning line, shows the link, tells the user to send it themselves, offers no retry.",
       "expectations": [
         "Starts with `⚠️ Shared, but the email to recipients failed.`",
-        "Shows the Link https://skipshare.example/files/abc",
+        "Shows the Download URL https://skipshare.example/files/abc",
         "Says to send the link yourself",
         "Does not run send again and does not offer retry"
       ]

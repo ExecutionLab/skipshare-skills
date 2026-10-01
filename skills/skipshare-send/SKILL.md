@@ -429,7 +429,7 @@ Keep it short. Do not print the JSON. Same rule as the card: inside a ` ```text 
 markdown.
 
 ```text
-✅ Files shared.
+✅ Files shared successfully.
 
 Recipients
   2
@@ -438,17 +438,46 @@ Files
   3
 
 Expires in
-  4 days
+  4 days (until 2026-10-05 14:30)
 
-Link
+Download URL
   https://…/files/abc123
 ```
 
-`Link` is `share_url` from the result: the download page. Whoever opens it must still verify a
-recipient email by OTP, so it is safe to show. SkipShare also emails the recipients; do not claim
-the email has arrived. Exit 11 (saved, email failed) replaces the first line with
-`⚠️ Shared, but the email to recipients failed.` and adds, after the block: `Send them the link
-yourself.` Never offer **retry** here: the share exists, and sending again makes a second one.
+When the language is `ja`, use exactly this wording:
+
+```text
+✅ ファイルの共有が完了しました。
+
+宛先
+  2 名
+
+ファイル
+  3 件
+
+有効期限
+  4 日間（2026-10-05 14:30 まで）
+
+ダウンロード URL
+  https://…/files/abc123
+```
+
+The date in brackets is when the link stops working, in this computer's local time. SkipShare sets
+it to the send time plus the chosen days, so compute it right after the send succeeds (`N` is the
+days sent with `--expires-in`):
+
+```bash
+node -e "console.log(new Date(Date.now()+N*864e5).toLocaleString('sv-SE',{dateStyle:'short',timeStyle:'short'}))"
+```
+
+Write `1 day` / `1 日間` for one day.
+
+`Download URL` is `share_url` from the result: the download page. Whoever opens it must still
+verify a recipient email by OTP, so it is safe to show. SkipShare also emails the recipients; do
+not claim the email has arrived. Exit 11 (saved, email failed) replaces the first line with
+`⚠️ Shared, but the email to recipients failed.` (`ja`: `⚠️ 共有は完了しましたが、宛先へのメール送信に失敗しました。`)
+and adds, after the block: `Send them the link yourself.` (`ja`: `お手数ですが、ダウンロード URL を宛先に直接お送りください。`)
+Never offer **retry** here: the share exists, and sending again makes a second one.
 
 ## Handling each failure (for you, not for the user)
 
