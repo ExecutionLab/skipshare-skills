@@ -438,7 +438,7 @@ Files
   3
 
 Expires in
-  4 days (until 2026-10-05 14:30)
+  4 days (until 10/05/2026 14:30)
 
 Download URL
   https://…/files/abc123
@@ -456,7 +456,7 @@ When the language is `ja`, use exactly this wording:
   3 件
 
 有効期限
-  4 日間（2026-10-05 14:30 まで）
+  4 日間（2026/10/05 14:30 まで）
 
 ダウンロード URL
   https://…/files/abc123
@@ -467,8 +467,11 @@ it to the send time plus the chosen days, so compute it right after the send suc
 days sent with `--expires-in`):
 
 ```bash
-node -e "console.log(new Date(Date.now()+N*864e5).toLocaleString('sv-SE',{dateStyle:'short',timeStyle:'short'}))"
+node -e "const d=new Date(Date.now()+N*864e5),p=n=>String(n).padStart(2,'0'),t=p(d.getHours())+':'+p(d.getMinutes());console.log('en: '+p(d.getMonth()+1)+'/'+p(d.getDate())+'/'+d.getFullYear()+' '+t);console.log('ja: '+d.getFullYear()+'/'+p(d.getMonth()+1)+'/'+p(d.getDate())+' '+t)"
 ```
+
+Use the `en` line (`MM/DD/YYYY HH:mm`) for English and the `ja` line (`YYYY/MM/DD HH:mm`) for
+Japanese. The time is 24-hour.
 
 Write `1 day` / `1 日間` for one day.
 
