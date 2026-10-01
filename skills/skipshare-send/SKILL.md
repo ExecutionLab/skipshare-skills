@@ -31,16 +31,32 @@ npx -y @skipshare/cli@0 <command> ... --json
 
 Run `npx -y @skipshare/cli@0 login status --json`.
 
-- `node` or `npx` not found, or Node.js older than 20: SkipShare is not set up. Say so in one line
-  and offer the skipshare-setup skill ("Reply **ok** to set it up"), which installs everything.
-
 - Exit 0: logged in. `email` is the user's own SkipShare account. `default_team` is the owner email
   of the team used when `--team` is left out, or `null` when sends go out personally.
-- Exit 3: not logged in, or the token expired or was revoked. Show the short login error; the fix
-  happens **in the user's own terminal**: create a personal access token at
-  `error.data.token_page_url` (or in SkipShare under Settings → Personal access tokens), then run `npx -y @skipshare/cli@0 login` and paste the token at the hidden prompt.
-  In CI, set the `SKIPSHARE_TOKEN` environment variable instead.
-  Or offer the skipshare-setup skill, which walks the user through the login without the terminal.
+- `node` or `npx` not found, Node.js older than 20, or exit 3 (not logged in, or the token expired
+  or was revoked): SkipShare is not ready on this computer. **Suggest** the setup and stop; never
+  start it, install anything or open a login on your own. List only what is missing, then wait:
+
+  ```text
+  SkipShare isn't set up on this computer yet:
+  • Node.js: install v22 (you have v18, the CLI needs 20 or newer)
+  • Login: you create a token in the SkipShare web app, I connect it
+  Then pick your language and default team.
+  ```
+
+  > Reply **ok** to set it up, then I'll send your files. Or **N** to cancel.
+
+  Only the login missing (exit 3): show just the Login line, and add the token page
+  (`error.data.token_page_url`) below the list.
+  - **ok** (also yes/continue): run the skipshare-setup skill from its step 3; this reply was its
+    confirm, so do not ask again. When it ends with "SkipShare is ready", go straight back to this
+    share: keep every file, recipient and field the user already gave, run the dry run and show the
+    card. Do not ask again for what you already have.
+  - **N**: `Share cancelled. No files were sent.` Mention that **skipshare init** sets it up later.
+  - The user would rather log in themselves: create a token at `error.data.token_page_url` (or in
+    SkipShare under Settings → Personal access tokens), run `npx -y @skipshare/cli@0 login` in
+    their own terminal and paste it at the hidden prompt, then reply **done**; check
+    `login status` again and carry on with the share. In CI, set `SKIPSHARE_TOKEN` instead.
 
 Never ask the user to paste a token into the chat, and never put a token on a command line.
 
@@ -50,6 +66,7 @@ Run `npx -y @skipshare/cli@0 config language --json` before you write anything, 
 "I'll prepare this share". Then write every line in its `effective` language (`en` English, `ja`
 Japanese): status and progress lines, questions, the card labels, errors and the result. The
 replies in this skill are written in English; translate them when the language is `ja`.
+When the CLI cannot run yet (no Node.js), reply in English.
 
 The language the user writes in does not change this. A user who writes in Vietnamese with
 `effective` `en` gets English replies. Switch only when the user tells you which language to reply
@@ -305,29 +322,29 @@ Take the numbers from `error.data` when it is there, and from `error.message` ot
 | `access_expiration_exceeded`                         | `max_expiration_days`                                                         |
 | `recipient_emails_not_allowed`                       | `invalid_recipients`, `invalid_cc_emails` (from the server)                   |
 
-| Error                                        | Line 1 (and 2)                                                                                        | Last line                                                                                                                                                    |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `file_not_found` (missing)                   | `report.pdf` not found.                                                                               | Reply with the correct path, or **skip** to send without it.                                                                                                 |
-| `file_not_found` (a folder)                  | `photos` is a folder. Only files can be sent.                                                         | Reply **zip** to send it as `photos.zip`, or list the files inside to send.                                                                                  |
-| empty file                                   | `notes.txt` is empty (0 bytes).                                                                       | Reply **skip** to send without it, or with another path.                                                                                                     |
-| `file_size_exceeded`                         | `video.mp4` is **55 MB**. / The limit is **5 MB** per file. (Several files: list each with its size.) | Reply **skip** to send the other files. When no file would be left: Reply with a smaller file.                                                               |
-| invalid email                                | `abc@` is not a valid email.                                                                          | Reply with the correct address.                                                                                                                              |
-| `recipient_emails_not_allowed`               | This team only sends to approved addresses. Not allowed: `x@gmail.com`.                               | 1. Remove `x@gmail.com` 2. Send from your personal team — Reply with a number.                                                                               |
-| `receivers_limit_exceeded`                   | **55** recipients. / The limit is **50** (To + CC).                                                   | Reply with the addresses to remove.                                                                                                                          |
-| subject / message too long                   | The subject is **130** characters. / The limit is **100**.                                            | Reply with a shorter subject.                                                                                                                                |
-| `access_expiration_exceeded`                 | Expiration is too long. / Your plan allows up to **4 days**.                                          | Reply **4** to use 4 days, or a smaller number.                                                                                                              |
-| `access_expiration_invalid`                  | `soon` is not a number of days.                                                                       | Reply with a number of days, from 1 to the plan's maximum.                                                                                                   |
-| `monthly_upload_new_files_exceeded`          | Only **3** files left this month. You are sending 5.                                                  | Reply with the 3 files to send now.                                                                                                                          |
-| `monthly_upload_limit_exceeded`              | This month's **10** files are used up. (Add `Resets on [date].` from `resetAt`.)                      | Nothing can be sent until the reset. For more, upgrade in the SkipShare web app.                                                                             |
-| `quota_exceeded` / `over_quota_blocked`      | Not enough storage: **8 MB** needed, **5 MB** left. (No `needed`: Storage is full.)                   | See "Storage full" below.                                                                                                                                    |
-| not logged in (exit 3)                       | You are not logged in to SkipShare.                                                                   | 1. Create a token: SkipShare → Settings → Personal access tokens 2. Run `npx -y @skipshare/cli@0 login` in your terminal and paste it — then reply **done**. |
-| `team_not_found`, `default_team_not_set`     | See "Team errors" below.                                                                              |                                                                                                                                                              |
-| network (exit 10)                            | Can't reach SkipShare.                                                                                | Check your connection, then reply **retry**.                                                                                                                 |
-| rate limit (8), server (9), upload twice (6) | SkipShare is busy right now. (`maintenance`: SkipShare is under maintenance.)                         | Reply **retry** in a few minutes.                                                                                                                            |
-| `node_version_unsupported`                   | SkipShare CLI needs Node.js **20** or newer.                                                          | Install Node.js 20+, then reply **retry**.                                                                                                                   |
-| `cli_upgrade_required` (12)                  | This SkipShare CLI version is no longer supported.                                                    | Update the `skipshare-send` skill, then reply **retry**.                                                                                                     |
-| `idempotency_in_progress` (7)                | Do not reply yet: wait a minute and run the same command yourself once.                               |                                                                                                                                                              |
-| anything else                                | Couldn't send: [first sentence of `error.message`].                                                   | Reply **retry**, or **details** to see the full error.                                                                                                       |
+| Error                                        | Line 1 (and 2)                                                                                        | Last line                                                                                      |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `file_not_found` (missing)                   | `report.pdf` not found.                                                                               | Reply with the correct path, or **skip** to send without it.                                   |
+| `file_not_found` (a folder)                  | `photos` is a folder. Only files can be sent.                                                         | Reply **zip** to send it as `photos.zip`, or list the files inside to send.                    |
+| empty file                                   | `notes.txt` is empty (0 bytes).                                                                       | Reply **skip** to send without it, or with another path.                                       |
+| `file_size_exceeded`                         | `video.mp4` is **55 MB**. / The limit is **5 MB** per file. (Several files: list each with its size.) | Reply **skip** to send the other files. When no file would be left: Reply with a smaller file. |
+| invalid email                                | `abc@` is not a valid email.                                                                          | Reply with the correct address.                                                                |
+| `recipient_emails_not_allowed`               | This team only sends to approved addresses. Not allowed: `x@gmail.com`.                               | 1. Remove `x@gmail.com` 2. Send from your personal team — Reply with a number.                 |
+| `receivers_limit_exceeded`                   | **55** recipients. / The limit is **50** (To + CC).                                                   | Reply with the addresses to remove.                                                            |
+| subject / message too long                   | The subject is **130** characters. / The limit is **100**.                                            | Reply with a shorter subject.                                                                  |
+| `access_expiration_exceeded`                 | Expiration is too long. / Your plan allows up to **4 days**.                                          | Reply **4** to use 4 days, or a smaller number.                                                |
+| `access_expiration_invalid`                  | `soon` is not a number of days.                                                                       | Reply with a number of days, from 1 to the plan's maximum.                                     |
+| `monthly_upload_new_files_exceeded`          | Only **3** files left this month. You are sending 5.                                                  | Reply with the 3 files to send now.                                                            |
+| `monthly_upload_limit_exceeded`              | This month's **10** files are used up. (Add `Resets on [date].` from `resetAt`.)                      | Nothing can be sent until the reset. For more, upgrade in the SkipShare web app.               |
+| `quota_exceeded` / `over_quota_blocked`      | Not enough storage: **8 MB** needed, **5 MB** left. (No `needed`: Storage is full.)                   | See "Storage full" below.                                                                      |
+| not logged in (exit 3)                       | See "Before sending: check the login": suggest the setup and wait for **ok**.                         |                                                                                                |
+| `team_not_found`, `default_team_not_set`     | See "Team errors" below.                                                                              |                                                                                                |
+| network (exit 10)                            | Can't reach SkipShare.                                                                                | Check your connection, then reply **retry**.                                                   |
+| rate limit (8), server (9), upload twice (6) | SkipShare is busy right now. (`maintenance`: SkipShare is under maintenance.)                         | Reply **retry** in a few minutes.                                                              |
+| `node_version_unsupported`                   | SkipShare CLI needs Node.js **20** or newer.                                                          | Install Node.js 20+, then reply **retry**.                                                     |
+| `cli_upgrade_required` (12)                  | This SkipShare CLI version is no longer supported.                                                    | Update the `skipshare-send` skill, then reply **retry**.                                       |
+| `idempotency_in_progress` (7)                | Do not reply yet: wait a minute and run the same command yourself once.                               |                                                                                                |
+| anything else                                | Couldn't send: [first sentence of `error.message`].                                                   | Reply **retry**, or **details** to see the full error.                                         |
 
 Only the Storage-full, monthly-limit and not-logged-in errors leave nothing to fix in the draft.
 Keep the draft anyway: after **retry** or **done**, run the dry run again and show the card.

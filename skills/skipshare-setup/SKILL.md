@@ -36,6 +36,9 @@ When everything is ready and logged in, skip to step 5 (settings) and say
 
 ## 2. One confirm
 
+When skipshare-send started this skill after the user replied **ok** to its setup list, that
+reply was the confirm: skip to step 3. Otherwise never install anything before this confirm.
+
 Show one short list of what will happen. Leave out the steps that are already done:
 
 ```text

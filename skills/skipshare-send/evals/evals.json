@@ -356,6 +356,37 @@
         "To a@example.com, CC old-owner@example.com, expiry 3 days",
         "Asks once about sending the compressed chat copy or the original path"
       ]
+    },
+    {
+      "id": 35,
+      "prompt": "send ~/Downloads/report.pdf to bob@example.com  (login status --json exits 3 with error.data.token_page_url http://localhost:3000/settings/access-tokens)",
+      "expected_output": "Suggests the setup with only the Login line and the token page, then waits; nothing is started until the user replies ok.",
+      "expectations": [
+        "Shows a setup list with only the Login line",
+        "Includes the token page URL",
+        "Ends with Reply **ok** to set it up … or **N** to cancel",
+        "Does not run skipshare-setup, login or any install before the user replies"
+      ]
+    },
+    {
+      "id": 36,
+      "prompt": "send ~/Downloads/report.pdf to bob@example.com  (node: command not found). The user then replies: ok",
+      "expected_output": "After ok, runs skipshare-setup from step 3 without a second confirm, then returns to the share and shows the card for report.pdf to bob@example.com.",
+      "expectations": [
+        "Before ok: lists Node.js, CLI/login as missing and waits",
+        "After ok: does not show the setup confirm list again",
+        "After setup ends: runs the dry run and shows the card without asking again for the file or recipient"
+      ]
+    },
+    {
+      "id": 37,
+      "prompt": "send ~/Downloads/report.pdf to bob@example.com  (login status --json exits 3). The user then replies: N",
+      "expected_output": "Cancels without installing or logging in.",
+      "expectations": [
+        "Replies Share cancelled. No files were sent.",
+        "Mentions skipshare init for later",
+        "Runs no install or login command"
+      ]
     }
   ]
 }
