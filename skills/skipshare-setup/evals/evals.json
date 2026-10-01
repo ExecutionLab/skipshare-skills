@@ -1,0 +1,110 @@
+{
+  "skill_name": "skipshare-setup",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "skipshare init  (machine has Node v18, no SkipShare CLI, Homebrew installed)",
+      "expected_output": "Checks first, then one confirm listing the Node.js update, the CLI install and the login, and waits for ok. Nothing is installed yet.",
+      "expectations": [
+        "Runs `node -v` and checks for the `skipshare` command before replying",
+        "Shows one list that mentions updating Node.js (v18 is older than 20), installing the SkipShare CLI and logging in",
+        "Ends with `Reply **ok** to start, or **N** to cancel.`",
+        "Runs no install command (`brew`, `npm install`, `nvm`, `winget`) before the user replies ok"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "ok  (after the setup confirm; Node v18 from Homebrew, no CLI; login status error.data.token_page_url is https://app.example.com/settings/access-tokens)",
+      "expected_output": "Upgrades Node.js with brew, installs the CLI globally, then asks the user to create and copy a token without pasting it.",
+      "expectations": [
+        "Runs `brew upgrade node` (or `brew install node`) and checks `node -v` again",
+        "Runs `npm install -g @skipshare/cli@0` and never uses `sudo`",
+        "Gives the link https://app.example.com/settings/access-tokens to create a token and asks the user to reply **ok** after copying it",
+        "Says not to paste the token into the chat"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "ok  (token copied, macOS, CLI installed)",
+      "expected_output": "Pipes the clipboard into `skipshare login --json` and reports the logged-in email.",
+      "expectations": [
+        "Runs `pbpaste | skipshare login --json`",
+        "Never prints, echoes or saves the clipboard content",
+        "On exit 0 replies `✅ Logged in as` followed by the email",
+        "Then asks the language question as a numbered list with `1. English` and `2. 日本語 (Japanese)`"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "ok  (login with the clipboard token exits 3: token rejected)",
+      "expected_output": "Short invalid-token error asking to copy the token again and reply ok. No token requested in chat.",
+      "expectations": [
+        "Output starts with `❌ That token isn't valid.`",
+        "Asks the user to copy the whole token again (or create a new one) and reply **ok**",
+        "Does not ask the user to paste the token into the chat"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "skipshare init  (Node missing, no brew, nvm or winget)",
+      "expected_output": "After ok, cannot install Node.js: points to nodejs.org and waits for retry.",
+      "expectations": [
+        "Does not run `sudo` or ask for a password",
+        "Shows `❌ I can't install Node.js here.` with the https://nodejs.org link",
+        "Ends with reply **retry**"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "ok  (npm install -g fails with EACCES)",
+      "expected_output": "Falls back to npx without sudo and continues to login.",
+      "expectations": [
+        "Does not retry with `sudo`",
+        "Says it will run SkipShare through npx instead of installing it",
+        "Uses `npx -y @skipshare/cli@0` for the later commands, including `login --json`"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "2  (answer to the language question; team list has the user's own team plus Acme owned by boss@acme.com)",
+      "expected_output": "Sets Japanese, then asks the default-team question in Japanese with the personal team first.",
+      "expectations": [
+        "Runs `config language ja --json`",
+        "The following reply is in Japanese",
+        "The team list starts with `1.` for the personal team and lists `Acme (boss@acme.com)`",
+        "Does not list the row whose `role` is `owner` as a separate team",
+        "Mentions **skip** to keep the personal team"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "2  (answer to the default-team question; option 2 is Acme, boss@acme.com)",
+      "expected_output": "Sets the default team, shows the ready summary and send examples.",
+      "expectations": [
+        "Runs `config default-team boss@acme.com --json`",
+        "Shows `✅ SkipShare is ready.` with the account, language and default team",
+        "Gives two or three example send requests"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "set up SkipShare  (Node v22, CLI installed, already logged in as me@example.com)",
+      "expected_output": "No install confirm. Says it is already set up and goes to the settings.",
+      "expectations": [
+        "Does not show the install confirm or run any install command",
+        "Says SkipShare is already set up as me@example.com",
+        "Goes on to the language question"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "ok  (token copied, but no clipboard tool works in this environment)",
+      "expected_output": "Asks the user to run the login in their own terminal and reply ok, then checks login status.",
+      "expectations": [
+        "Asks the user to run `skipshare login` in their own terminal and paste the token at the hidden prompt",
+        "Does not ask for the token in the chat",
+        "After the next ok, runs `login status --json`"
+      ]
+    }
+  ]
+}

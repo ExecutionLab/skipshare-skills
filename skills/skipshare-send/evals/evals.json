@@ -1,0 +1,331 @@
+{
+  "skill_name": "skipshare-send",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Case A. send file.pdf to a@example.com, no cc, subject or message, default expiry is fine",
+      "expected_output": "All optional fields settled, so no question: a dry run, then a Share card with the default expiry, CC/Subject/Message shown as None, and a wait for Y/yes. Nothing is sent.",
+      "expectations": [
+        "Runs `send ... --dry-run --json` and never runs `send` without `--dry-run`",
+        "Shows the Share card with `To` = a@example.com",
+        "The card shows `CC`, `Subject` and `Message` each as `None`",
+        "The card shows `Expires in` with the dry run's `access_expiration` and `(default)`",
+        "Right below the card's code block, outside it, the reply says `Type Y or yes to confirm.` and `N to cancel, or tell me what to change.`, and nothing follows it",
+        "The card shows a `From` block (`Your personal team` when personal, or the team)",
+        "The card is inside a text code block and contains no `**` or backticks"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Case B. send file.pdf to a@example.com expired 10 days  (the plan allows at most 4 days)",
+      "expected_output": "The short three-line expiry error suggesting 4 days. Nothing uploaded or sent, draft kept.",
+      "expectations": [
+        "Output starts with `❌ Expiration is too long.`",
+        "States the 4-day maximum and ends with a reply the user can type, such as `Reply **4** to use 4 days`",
+        "Shows no error code, exit code, status, raw JSON or plan/quota explanation",
+        "Offers one suggestion, not a list of options",
+        "Never runs `send` without `--dry-run`",
+        "The error is plain chat text, not inside a code block, so `**4 days**` renders as bold"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Case B, second turn. Earlier: user asked to send file.pdf to a@example.com expiring in 10 days, and you replied with the 'Expiration is too long' error (max 4 days). User now says: 4 days (user said: no cc, no subject, no message, default expiry)",
+      "expected_output": "Expiry updated to 4 days, dry run re-run, new Share card; recipient and file are not asked again.",
+      "expectations": [
+        "Does not ask again for recipients or files",
+        "Re-runs the dry run with `--expires-in 4d`",
+        "Shows the Share card with `Expires in` = 4 days, without `(default)`",
+        "Waits for Y/yes"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Case C. Earlier: the Share card for file.pdf to a@example.com was shown. User now says: subject: Test report",
+      "expected_output": "Subject updated, dry run re-run, new card, confirmation asked again.",
+      "expectations": [
+        "Does not send",
+        "Re-runs the dry run with `--subject \"Test report\"`",
+        "Shows a new Share card with `Subject` = Test report",
+        "Asks for Y/yes again"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Case D. (No share has been discussed in this conversation.) Y",
+      "expected_output": "Nothing is sent; the agent says there is nothing to send yet and asks what to share.",
+      "expectations": ["Runs no `send` command", "Replies that there is nothing to send yet"]
+    },
+    {
+      "id": 6,
+      "prompt": "Case E. Earlier: user asked to send notes.txt to a@example.com; you asked about CC/subject/message/expiry and the user replied: no",
+      "expected_output": "The card lists CC, Subject and Message as None before asking to confirm.",
+      "expectations": [
+        "The card contains the `CC`, `Subject` and `Message` labels, each followed by `None`",
+        "Does not ask separate questions for CC, subject or message"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Case F. Earlier: the Share card for file.pdf to a@example.com, 7 days (default) was shown. User now says: yes",
+      "expected_output": "The real send runs with the values on the card, then a short success message.",
+      "expectations": [
+        "Runs `send` without `--dry-run`, with `--to a@example.com` and `--expires-in 7d`",
+        "Replies with `✅ Files shared.` followed by Recipients, Files, Expires in and Link blocks; Link is `share_url`",
+        "Does not print the JSON result or the exit code"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Earlier: the Share card for file.pdf to a@example.com was shown. User now says: ok",
+      "expected_output": "`ok` is not a confirmation; nothing is sent and the agent asks for Y/yes.",
+      "expectations": [
+        "Runs no `send` command without `--dry-run`",
+        "Asks the user to type Y or yes to send, or N to cancel"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Earlier: the Share card for file.pdf to a@example.com was shown. User now says: cancel",
+      "expected_output": "Draft dropped, nothing sent.",
+      "expectations": [
+        "Runs no `send` command without `--dry-run`",
+        "Replies `Share cancelled. No files were sent.`"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Send files A.pdf and B.pdf to foo@example.com, cc bar@example.com, expire in 3 days, subject \"Report\", message \"Please review\"",
+      "expected_output": "No questions; dry run, then a card with every given value.",
+      "expectations": [
+        "Asks no question before the card",
+        "The card lists A.pdf and B.pdf under `Files (2)`",
+        "The card shows CC bar@example.com, Expires in 3 days, Subject Report, Message Please review"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "send these 23 files to a@example.com: f01.csv f02.csv ... f23.csv (all exist), message: a 600-character paragraph (no cc, no subject, default expiry)",
+      "expected_output": "The card stays short: three file names plus `… +20 more`, and the message preview truncated with its length.",
+      "expectations": [
+        "The Files block shows 3 names and `… +20 more`",
+        "The Message block shows at most 3 lines and ends with `… [600 characters]`",
+        "The command still passes the full message"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Gửi 3 file đính kèm đến a@example.com  (no file paths given; files were attached in the chat UI)",
+      "expected_output": "The two-line compressed-copies question; no dry run yet.",
+      "expectations": [
+        "Says chat images are sent as compressed copies, not the originals",
+        "Offers **ok** to send the copies, or the original file paths",
+        "Does not ask for the recipient again",
+        "Runs no dry run before the user answers"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Send ~/Downloads/1.jpg to bob@example.com  (default team owned by old-owner@example.com no longer exists; team list returns the user's own team (role owner, owner_email me@example.com), Acme (owner@acme.com) and one team with team_name null owned by lead@design.io)",
+      "expected_output": "One error line saying the default team is gone, then 'Pick a new default team:' with Your personal team and Acme (owner@acme.com), lead@design.io (own team left out), and 'Reply with a number. It becomes your default.'",
+      "expectations": [
+        "Runs team list --json after the team_not_found error, before replying",
+        "Reply has one error line and does not speculate about removed/left/deleted",
+        "Lists Your personal team first, then every team as a numbered choice, using the owner email when team_name is null",
+        "Does not list the role-owner row: the user's own team is already Your personal team",
+        "Because the failing team is the default, asks for a new default team and ends with 'Reply with a number. It becomes your default.'",
+        "Does not send or fall back to personal until the user picks and confirms with y/yes"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "send report.pdf and notes.txt to abc@ and bob@example.com  (report.pdf does not exist; notes.txt exists and has content)",
+      "expected_output": "One reply listing both problems as a numbered list and saying what to reply.",
+      "expectations": [
+        "Checks the paths and addresses before or instead of several dry runs",
+        "One reply names both `report.pdf` not found and `abc@` invalid, as a numbered list",
+        "The last line tells the user what to reply (correct path/address, or skip)",
+        "Shows no error code, exit code or raw JSON"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Earlier: dry run of video.mp4 and a.pdf to a@example.com failed because video.mp4 is 55 MB and the plan allows 5 MB per file; the agent offered **skip**. User now says: skip (user said: no cc, no subject, no message, default expiry)",
+      "expected_output": "video.mp4 is dropped from the draft; a new dry run and a new card with only a.pdf.",
+      "expectations": [
+        "Re-runs the dry run with a.pdf only and still --to a@example.com",
+        "Shows a new Share card with `Files (1)` listing a.pdf",
+        "Does not send; waits for Y/yes"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "Earlier: user confirmed the card with Y. The real send exits 11 (share saved, notification email failed) and returns share_url https://skipshare.example/files/abc",
+      "expected_output": "Starts with the warning line, shows the link, tells the user to send it themselves, offers no retry.",
+      "expectations": [
+        "Starts with `⚠️ Shared, but the email to recipients failed.`",
+        "Shows the Link https://skipshare.example/files/abc",
+        "Says to send the link yourself",
+        "Does not run send again and does not offer retry"
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "send design.zip to a@example.com  (dry run exits 5 with {\"error\":{\"code\":\"quota_exceeded\",\"message\":\"...\",\"status\":null,\"data\":{\"metric\":\"total_storage\",\"limit\":1073741824,\"used\":1068498944,\"remaining\":5242880,\"needed\":8388608}}})",
+      "expected_output": "Not enough storage: **8 MB** needed, **5 MB** left, remove at least **3 MB**; design.zip listed as 1 with its size; reply numbers to remove, or delete old files in the web app and reply retry.",
+      "expectations": [
+        "Shows the numbers from error.data converted to MB (8 MB needed, 5 MB left), not raw bytes",
+        "Lists every draft file numbered with its size and says how much to remove",
+        "Ends with both options: numbers to remove, or delete old files in the SkipShare web app and reply **retry**",
+        "Shows no error code, exit code or raw JSON"
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "(continuing eval 13) User replies: 2 (user said: no cc, no subject, no message, default expiry)",
+      "expected_output": "Runs config default-team owner@acme.com --json, reruns the dry run without --team, shows a new Share card with From Acme (owner@acme.com)",
+      "expectations": [
+        "Runs `config default-team owner@acme.com --json` before the dry run",
+        "Reruns the dry run without --team so the new default is used",
+        "Shows a new Share card with From: Acme (owner@acme.com) and waits for y/yes",
+        "Does not send yet"
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "send file.pdf to a@example.com  (dry run succeeds, access_expiration 7)",
+      "expected_output": "Dry run, then one two-line question: 'Add CC, a subject or a message? Expiry is 7 days (default).' / 'Reply with what to change, or **skip** to continue.' No card yet.",
+      "expectations": [
+        "Runs the dry run before asking",
+        "Asks one question of at most two lines naming CC, subject, message and the 7-day default expiry",
+        "Ends with a reply the user can type, including **skip** to continue",
+        "Does not show the Share card yet and sends nothing"
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "send file.pdf to a@example.com, subject \"Report\", expires in 3 days, no cc",
+      "expected_output": "The question names only the message: e.g. 'Add a message?' / 'Reply with the message, or **skip** to continue.'",
+      "expectations": [
+        "Does not ask about CC, subject or expiry, which the user already settled",
+        "Asks only about the message, in at most two lines",
+        "Does not show the card yet"
+      ]
+    },
+    {
+      "id": 21,
+      "prompt": "Earlier: you asked 'Add CC, a subject or a message? Expiry is 7 days (default).' User replies: cc bob@example.com",
+      "expected_output": "CC added, dry run re-run, Share card shown with CC bob@example.com, Subject/Message None, 7 days (default). No second question.",
+      "expectations": [
+        "Reruns the dry run with --cc bob@example.com",
+        "Shows the Share card straight away without asking about subject or message again",
+        "Card shows Subject and Message as None and Expires in 7 days (default)"
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "Earlier: the storage error listed 1. 1.webp: 3.2 MB  2. 2.webp: 2.8 MB  3. css-handbook.pdf: 1.1 MB (remove at least 5 MB). User replies: 1,2 (user said: no cc, no subject, no message, default expiry)",
+      "expected_output": "1.webp and 2.webp dropped from the draft, dry run re-run, new Share card with only css-handbook.pdf.",
+      "expectations": [
+        "Removes exactly files 1 and 2 from the draft",
+        "Reruns the dry run without them",
+        "Shows a new Share card listing only css-handbook.pdf and waits for Y/yes",
+        "Does not tell the user to delete files in the web app again"
+      ]
+    },
+    {
+      "id": 23,
+      "prompt": "gửi 2 file trong ~/Photos to bob@example.com  (~/Photos has 4 images: 1.jpg 344.5 KB, 2.jpg 210.6 KB, 3.jpg 309.2 KB, 4.jpg 360.4 KB)",
+      "expected_output": "'Which 2 files?', a numbered list with sizes, and 'Reply with 2 numbers (for example **1,3**).' in English (config language en).",
+      "expectations": [
+        "Opens with the question itself, e.g. 'Which 2 files?'",
+        "Does not point out the mismatch (no 'bạn đính kèm 4 ảnh nhưng muốn gửi 2 file')",
+        "Lists every candidate file numbered with its size",
+        "Ends with what to reply, e.g. 2 numbers like **1,3**",
+        "Runs no dry run and shows no card yet"
+      ]
+    },
+    {
+      "id": 24,
+      "prompt": "gửi 2 file to bob@example.com  (4 images are attached in the chat; copies exist as /private/tmp/claude-501/.../images/1.webp ... 4.webp)",
+      "expected_output": "The compressed-copies question (ok, or the original file paths); no list of the copies, no mismatch remark.",
+      "expectations": [
+        "Says chat images are sent as compressed copies, not the originals",
+        "Offers **ok** to send the copies, or the original file paths",
+        "Does not point out a mismatch between 4 attachments and 2 files",
+        "Runs no dry run before the user answers"
+      ]
+    },
+    {
+      "id": 25,
+      "prompt": "gửi dylan-calluy-lMSzhA2Qywo-unsplash.jpg to bob@example.com, no cc, subject or message, default expiry  (the original is ~/Downloads/dylan-calluy-lMSzhA2Qywo-unsplash.jpg, 2.4 MB; a re-compressed copy also sits in a chat image cache as 1.webp)",
+      "expected_output": "Finds ~/Downloads/dylan-calluy-lMSzhA2Qywo-unsplash.jpg, runs the dry run with it, card lists that name.",
+      "expectations": [
+        "Searches the usual folders by the file name instead of asking for a path",
+        "Uses the original ~/Downloads file, not the cached 1.webp copy",
+        "The card lists dylan-calluy-lMSzhA2Qywo-unsplash.jpg"
+      ]
+    },
+    {
+      "id": 26,
+      "prompt": "Dry run returned quota_exceeded (needed 6.8 MB, remaining 2.9 MB) but the draft files' names and sizes cannot be read",
+      "expected_output": "'❌ Not enough storage for these files. Send fewer files, or delete old files in the SkipShare web app and reply **retry**.' with no file list.",
+      "expectations": [
+        "Shows a not-enough-storage error",
+        "Suggests sending fewer files and deleting old files in the SkipShare web app",
+        "Does not list files or sizes",
+        "Does not explain why the files cannot be listed or ask for file paths"
+      ]
+    },
+    {
+      "id": 27,
+      "prompt": "Earlier: 4 images attached in the chat (sources …/images/1.webp … 4.webp), user asked to send them to bob@example.com, no cc, subject or message, default expiry; the agent asked the compressed-copies question. User replies: ok",
+      "expected_output": "Dry run with the 4 copy paths, then the Share card listing 1.webp … 4.webp with their sizes.",
+      "expectations": [
+        "Runs the dry run with the four copy paths",
+        "The card lists the copies' names and sizes",
+        "Does not ask the compressed-copies question again",
+        "Does not ask about CC, subject, message or expiry"
+      ]
+    },
+    {
+      "id": 28,
+      "prompt": "@\"/Users/me/Desktop/clip.mov\" gửi cho bob@example.com, no cc, subject or message, default expiry",
+      "expected_output": "Dry run with /Users/me/Desktop/clip.mov and the Share card; no compressed-copies question.",
+      "expectations": [
+        "Uses /Users/me/Desktop/clip.mov as the file",
+        "Does not ask the compressed-copies question",
+        "Shows the Share card"
+      ]
+    },
+    {
+      "id": 29,
+      "prompt": "gửi ~/Downloads/report.pdf cho bob@example.com  (config language --json returns effective en)",
+      "expected_output": "All replies in English even though the user wrote Vietnamese.",
+      "expectations": [
+        "Runs config language --json before the first reply",
+        "The optional-fields question and the card are in English",
+        "Keeps **skip** and **Y**/**yes** as they are"
+      ]
+    },
+    {
+      "id": 30,
+      "prompt": "Reply in Vietnamese. Send ~/Downloads/report.pdf to bob@example.com  (config language --json returns effective en)",
+      "expected_output": "All replies in Vietnamese because the user asked for it; keywords stay as they are.",
+      "expectations": [
+        "The questions and the card are in Vietnamese",
+        "Keeps **skip** and **Y**/**yes** untranslated",
+        "Keeps the file name and email address as they are"
+      ]
+    },
+    {
+      "id": 31,
+      "prompt": "send ~/Downloads/report.pdf to bob@example.com  (config language --json returns effective ja)",
+      "expected_output": "All replies in Japanese.",
+      "expectations": [
+        "The questions, card labels and result are in Japanese",
+        "Keeps **skip** and **Y**/**yes** untranslated"
+      ]
+    }
+  ]
+}
