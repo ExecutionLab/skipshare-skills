@@ -13,7 +13,8 @@ command-line client, shows you what it is about to send, and sends only after yo
 ## Quick start
 
 1. Install the skills (see [Install](#install)).
-2. Tell your agent: **skipshare init**
+2. Set up first: tell your agent **skipshare init** (or call the skill directly, see
+   [Using the skills](#using-the-skills)).
 3. Reply **ok** to the one confirm, create a token in the web app when asked, copy it, reply **ok**.
 4. Pick your language and default team.
 5. Send: "Send report.pdf to a@example.com".
@@ -24,6 +25,19 @@ With the [skills](https://www.npmjs.com/package/skills) installer, which works w
 
 ```bash
 npx skills add ExecutionLab/skipshare-skills
+```
+
+The installer asks which agents and which scope. To install for Claude Code and Codex in every
+project without the questions:
+
+```bash
+npx skills add ExecutionLab/skipshare-skills -g -a claude-code -a codex
+```
+
+Update to the latest version later (only these two skills):
+
+```bash
+npx skills update skipshare-send skipshare-setup -g
 ```
 
 To pin a released version, add the git tag: `ExecutionLab/skipshare-skills#v1.0.0`.
@@ -37,6 +51,21 @@ cp -R skipshare-skills/skills/* ~/.claude/skills/
 ```
 
 For other agents, copy the folders into that agent's skills directory.
+
+## Using the skills
+
+Run **skipshare-setup** once, then use **skipshare-send** for every share. Start a new session
+after installing or updating, so the agent loads the skills.
+
+| Agent       | Set up             | Send                                          |
+| ----------- | ------------------ | --------------------------------------------- |
+| Claude Code | `/skipshare-setup` | `/skipshare-send report.pdf to a@example.com` |
+| Codex       | `$skipshare-setup` | `$skipshare-send report.pdf to a@example.com` |
+| Any agent   | "skipshare init"   | "Send report.pdf to a@example.com"            |
+
+Calling the skill by name is the surest way. Plain requests work too: the agent picks the skill
+from what you ask. If you send before setting up, the send skill lists what is missing and offers
+the setup; nothing is installed until you reply **ok**.
 
 ## Setup: `skipshare init`
 
@@ -82,7 +111,8 @@ Ask in your own words:
 
 What the agent does:
 
-- **Checks your login first.** If you are not logged in, it offers `skipshare init`.
+- **Checks your setup first.** If Node.js or the login is missing, it lists what is missing and
+  offers the setup. Nothing is installed until you reply **ok**; then it sends the files you asked for.
 - **Picks who the share comes from:** your default team, or personally when none is set, unless you
   name a team. If the name matches no team or several, it asks.
 - **Asks once about optional fields** you did not mention (CC, subject, message, expiry). Reply
