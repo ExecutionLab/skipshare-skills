@@ -23,7 +23,10 @@ Run these quietly, before saying anything:
 
 - `node -v`: Node.js is ready when it prints `v20` or newer. Missing or older: it needs an install
   or an update.
-- `skipshare --version`: the CLI is installed globally when this prints a version.
+- `skipshare --version`: the CLI is installed globally when this prints a version. Then run
+  `skipshare update --json` to bring it to the newest release. A CLI older than 0.1.2 has no
+  `update` command: run `npm install -g @skipshare/cli@0` instead. If either fails, carry on with
+  the installed version.
 - `skipshare login status --json` (or `npx -y @skipshare/cli@0 login status --json` when the CLI is
   not installed but Node.js is ready): exit 0 means logged in, and `email` is the account. Exit 3
   means not logged in; keep `error.data.token_page_url` for step 4.

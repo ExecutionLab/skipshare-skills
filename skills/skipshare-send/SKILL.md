@@ -350,9 +350,15 @@ Take the numbers from `error.data` when it is there, and from `error.message` ot
 | network (exit 10)                            | Can't reach SkipShare.                                                                                | Check your connection, then reply **retry**.                                                   |
 | rate limit (8), server (9), upload twice (6) | SkipShare is busy right now. (`maintenance`: SkipShare is under maintenance.)                         | Reply **retry** in a few minutes.                                                              |
 | `node_version_unsupported`                   | SkipShare CLI needs Node.js **20** or newer.                                                          | Install Node.js 20+, then reply **retry**.                                                     |
-| `cli_upgrade_required` (12)                  | This SkipShare CLI version is no longer supported.                                                    | Update the `skipshare-send` skill, then reply **retry**.                                       |
+| `cli_upgrade_required` (12)                  | This SkipShare CLI version is no longer supported.                                                    | Reply **ok** to update it. On ok: see below.                                                   |
 | `idempotency_in_progress` (7)                | Do not reply yet: wait a minute and run the same command yourself once.                               |                                                                                                |
 | anything else                                | Couldn't send: [first sentence of `error.message`].                                                   | Reply **retry**, or **details** to see the full error.                                         |
+
+`cli_upgrade_required`, after **ok**: run `npx -y @skipshare/cli@0 update --json` (a CLI older than
+0.1.2 has no `update` command; run `npm install -g @skipshare/cli@0` instead), then run the dry run
+again and show the card. Keep the draft. If the update fails (`update_failed`, exit 13), say
+`Couldn't update the SkipShare CLI.` and give `npm install -g @skipshare/cli@0` to run in their
+own terminal.
 
 Only the Storage-full, monthly-limit and not-logged-in errors leave nothing to fix in the draft.
 Keep the draft anyway: after **retry** or **done**, run the dry run again and show the card.

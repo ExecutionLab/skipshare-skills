@@ -87,8 +87,9 @@ Say **skipshare init** (or "set up SkipShare"). The agent:
 3. **Installs Node.js** with the tool you already have: nvm, Homebrew or winget. It never runs
    `sudo` or asks for a password. Without one of those tools it links you to
    [nodejs.org](https://nodejs.org) and continues when you reply **retry**.
-4. **Installs the CLI** with `npm install -g @skipshare/cli@0`. If npm has no permission for global
-   installs, it runs the CLI through `npx` instead.
+4. **Installs the CLI** with `npm install -g @skipshare/cli@0`, or updates an installed one with
+   `skipshare update`. If npm has no permission for global installs, it runs the CLI through `npx`
+   instead.
 5. **Logs you in.** It gives you the link to the token page of your SkipShare web app. You create a
    personal access token, copy it, and reply **ok**. The agent pipes your clipboard straight into
    `skipshare login` (`pbpaste` on macOS, `Get-Clipboard` on Windows, `xclip` or `wl-paste` on
