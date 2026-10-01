@@ -228,5 +228,5 @@ version too.
 
 ## License
 
-© 2026 Intelligent T&E Inc. All rights reserved. You may use these skills with your own
-SkipShare account; see [LICENSE](LICENSE) for the terms.
+Copyright 2026 Intelligent T&E Inc. Licensed under the [Apache License 2.0](LICENSE), the same
+license as `@skipshare/cli`.
