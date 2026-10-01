@@ -73,6 +73,11 @@ The language the user writes in does not change this. A user who writes in Vietn
 in ("reply in Vietnamese", "trả lời bằng tiếng Việt"), and keep it for the rest of the conversation.
 Writing a message in a language is not such a request.
 
+Dates and times are in this computer's local time, 24-hour: `MM/DD/YYYY HH:mm` in English
+(`10/05/2026 14:30`), `YYYY/MM/DD HH:mm` in Japanese (`2026/10/05 14:30`). Drop the time when only
+a day is meant, such as `Resets on 10/01/2026.` Never show a raw ISO date such as
+`2026-10-01T05:00:00Z`.
+
 Keep as they are in every language: the reply keywords (**Y**/**yes**, **N**, **ok**, **skip**,
 **retry**, **details**), file names, email addresses, team names and links.
 
