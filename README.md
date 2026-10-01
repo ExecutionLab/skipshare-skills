@@ -157,7 +157,8 @@ What the agent does:
 
 The agent sends files from your disk. Files you drag into the chat as attachments work too, with
 one catch: chat apps turn **images** into compressed, renamed copies. The agent tells you so and
-asks you to reply **ok** to send the copies, or to give the original file paths. Other files (PDF,
+asks you to reply **ok** to send the copies, or to give the paths of the originals or of the folder
+they are in. Other files (PDF,
 video, archives) keep their original path and are sent as they are.
 
 ### Errors

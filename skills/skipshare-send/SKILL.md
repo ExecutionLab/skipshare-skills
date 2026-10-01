@@ -158,11 +158,14 @@ appears on the Share card before anything is sent.
    all attached images together:
 
    > Chat images are sent as compressed copies (smaller, renamed), not your originals.
-   > Reply **ok** to send the copies, or send the original file paths.
+   > Reply **ok** to send the copies, or send the paths of the originals or of the folder they are in.
 
    **ok** (also yes/continue): use the copy paths, run the dry run and carry on with the Flow; the
    card and any storage list show the copies' names and sizes. Names or paths: find the originals
-   as below and use them instead. Do not ask again for the same images in this draft.
+   as below and use them instead. A folder: the copies are renamed, so their names cannot be
+   matched. List the images in that folder (not its subfolders), numbered with name and size, and
+   ask which ones to send (`Reply with the numbers, or **all**.`). Do not ask again for the same
+   images in this draft.
 
    Always send the original file, and take its name and size from it (`stat`). When the user gives
    a file name but no path, look for it in `~/Downloads`, `~/Desktop`, `~/Documents` and
