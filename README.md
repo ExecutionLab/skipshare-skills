@@ -197,4 +197,5 @@ version too.
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+© 2026 Intelligent T&E Inc. All rights reserved. You may use these skills with your own
+SkipShare account; see [LICENSE](LICENSE) for the terms.
