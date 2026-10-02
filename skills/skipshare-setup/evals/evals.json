@@ -18,7 +18,7 @@
       "expected_output": "Upgrades Node.js with brew, installs the CLI globally, then asks the user to create and copy a token without pasting it.",
       "expectations": [
         "Runs `brew upgrade node` (or `brew install node`) and checks `node -v` again",
-        "Runs `npm install -g @skipshare/cli@0` and never uses `sudo`",
+        "Runs `npm install -g https://te-fsharing-dev-cli.s3.ap-northeast-1.amazonaws.com/skipshare-cli-latest.tgz` and never uses `sudo`",
         "Gives the link https://app.example.com/settings/access-tokens to create a token and asks the user to reply **ok** after copying it",
         "Says not to paste the token into the chat"
       ]
@@ -57,11 +57,11 @@
     {
       "id": 6,
       "prompt": "ok  (npm install -g fails with EACCES)",
-      "expected_output": "Falls back to npx without sudo and continues to login.",
+      "expected_output": "Stops without sudo and asks the user to fix the npm prefix, then retry.",
       "expectations": [
         "Does not retry with `sudo`",
-        "Says it will run SkipShare through npx instead of installing it",
-        "Uses `npx -y @skipshare/cli@0` for the later commands, including `login --json`"
+        "Does not fall back to `npx`",
+        "Links the npm EACCES guide and waits for **retry**"
       ]
     },
     {

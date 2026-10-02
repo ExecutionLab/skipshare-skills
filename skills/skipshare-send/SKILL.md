@@ -10,14 +10,15 @@ SkipShare uploads files and emails the recipients a download link. This skill dr
 
 ## How to run the CLI
 
-Always run the CLI through npx, pinned to the major version this skill was written for, and always
-pass `--json`:
+Always run the CLI as the global `skipshare` command, and always pass `--json`. This is the dev
+branch: the dev CLI is not on npm, so `npx` cannot run it.
 
 ```bash
-npx -y @skipshare/cli@0 <command> ... --json
+skipshare <command> ... --json
 ```
 
-- CLI requirement: Node.js 20 or newer, `@skipshare/cli` 0.x.
+- CLI requirement: Node.js 20 or newer, a dev build of `@skipshare/cli` installed with
+  `npm install -g https://te-fsharing-dev-cli.s3.ap-northeast-1.amazonaws.com/skipshare-cli-latest.tgz`.
 - With `--json`, stdout holds exactly one JSON object. On success it is the result; a real send
   returns `folder_key` and `share_url`. On failure it is
   `{"error": {"code": "...", "message": "...", "status": 409, "data": {...}}}`; `status` is `null`
@@ -29,12 +30,12 @@ npx -y @skipshare/cli@0 <command> ... --json
 
 ## Before sending: check the login
 
-Run `npx -y @skipshare/cli@0 login status --json`.
+Run `skipshare login status --json`.
 
 - Exit 0: logged in. `email` is the user's own SkipShare account. `default_team` is the owner email
   of the team used when `--team` is left out, or `null` when sends go out personally.
-- `node` or `npx` not found, Node.js older than 20, or exit 3 (not logged in, or the token expired
-  or was revoked): SkipShare is not ready on this computer. **Suggest** the setup and stop; never
+- `node` or `skipshare` not found, `skipshare --version` without `-dev.` (the npm release), Node.js
+  older than 20, or exit 3 (not logged in, or the token expired or was revoked): SkipShare is not ready on this computer. **Suggest** the setup and stop; never
   start it, install anything or open a login on your own. List only what is missing, then wait:
 
   ```text
@@ -54,7 +55,7 @@ Run `npx -y @skipshare/cli@0 login status --json`.
     card. Do not ask again for what you already have.
   - **N**: `Share cancelled. No files were sent.` Mention that **skipshare init** sets it up later.
   - The user would rather log in themselves: create a token at `error.data.token_page_url` (or in
-    SkipShare under Settings → Personal access tokens), run `npx -y @skipshare/cli@0 login` in
+    SkipShare under Settings → Personal access tokens), run `skipshare login` in
     their own terminal and paste it at the hidden prompt, then reply **done**; check
     `login status` again and carry on with the share. In CI, set `SKIPSHARE_TOKEN` instead.
 
@@ -62,7 +63,7 @@ Never ask the user to paste a token into the chat, and never put a token on a co
 
 ## Reply language
 
-Run `npx -y @skipshare/cli@0 config language --json` before you write anything, even a one-line
+Run `skipshare config language --json` before you write anything, even a one-line
 "I'll prepare this share". Then write every line in its `effective` language (`en` English, `ja`
 Japanese): status and progress lines, questions, the card labels, errors and the result. The
 replies in this skill are written in English; translate them when the language is `ja`.
@@ -87,7 +88,7 @@ Keep as they are in every language: the reply keywords (**Y**/**yes**, **N**, **
   personally when none is set. The dry run reports which one (`team`).
 - **"Personally" / "from me, not a team":** pass `--team personal`.
 - **The user names a team** ("from the Acme team"): run
-  `npx -y @skipshare/cli@0 team list --query "<name>" --json`. Each row has `team_name`,
+  `skipshare team list --query "<name>" --json`. Each row has `team_name`,
   `owner_name`, `owner_email` and `role`. The row with `role: "owner"` is the user's own team:
   sending from it is sending personally, so treat it as `Your personal team`, never as a team. One match:
   pass `--team <owner_email>`. None or several: list what you found in one short line each and ask
@@ -354,11 +355,10 @@ Take the numbers from `error.data` when it is there, and from `error.message` ot
 | `idempotency_in_progress` (7)                | Do not reply yet: wait a minute and run the same command yourself once.                               |                                                                                                |
 | anything else                                | Couldn't send: [first sentence of `error.message`].                                                   | Reply **retry**, or **details** to see the full error.                                         |
 
-`cli_upgrade_required`, after **ok**: run `npx -y @skipshare/cli@0 update --json` (a CLI older than
-0.1.2 has no `update` command; run `npm install -g @skipshare/cli@0` instead), then run the dry run
-again and show the card. Keep the draft. If the update fails (`update_failed`, exit 13), say
-`Couldn't update the SkipShare CLI.` and give `npm install -g @skipshare/cli@0` to run in their
-own terminal.
+`cli_upgrade_required`, after **ok**: run `skipshare update --json`, then run the dry run again and
+show the card. Keep the draft. If the update fails (`update_failed`, exit 13), say
+`Couldn't update the SkipShare CLI.` and give `npm install -g https://te-fsharing-dev-cli.s3.ap-northeast-1.amazonaws.com/skipshare-cli-latest.tgz` to run in their own
+terminal.
 
 Only the Storage-full, monthly-limit and not-logged-in errors leave nothing to fix in the draft.
 Keep the draft anyway: after **retry** or **done**, run the dry run again and show the card.
@@ -402,7 +402,7 @@ with one generic line:
 ### Team errors: list the teams to pick from
 
 On `team_not_found` or `default_team_not_set`, do not explain what might have happened. Run
-`npx -y @skipshare/cli@0 team list --json` first, then reply with one short line and a numbered
+`skipshare team list --json` first, then reply with one short line and a numbered
 list: `Your personal team` first, then every other team as `team_name (owner_email)`, using the owner email
 alone when `team_name` is null. Leave out the row with `role: "owner"`: it is the user's own team,
 which is `Your personal team` already.
@@ -433,7 +433,7 @@ every later send without a team fails the same way. So fix the default first: ti
 >
 > Reply with a number. It becomes your default.
 
-On the pick, run `npx -y @skipshare/cli@0 config default-team <owner_email|personal> --json`,
+On the pick, run `skipshare config default-team <owner_email|personal> --json`,
 then rerun the dry run without `--team` and show the new card. Change the default only in this
 case or when the user asks.
 

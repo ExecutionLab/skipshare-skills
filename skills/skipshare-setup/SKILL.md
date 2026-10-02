@@ -23,16 +23,16 @@ Run these quietly, before saying anything:
 
 - `node -v`: Node.js is ready when it prints `v20` or newer. Missing or older: it needs an install
   or an update.
-- `skipshare --version`: the CLI is installed globally when this prints a version. Then run
-  `skipshare update --json` to bring it to the newest release. A CLI older than 0.1.2 has no
-  `update` command: run `npm install -g @skipshare/cli@0` instead. If either fails, carry on with
-  the installed version.
-- `skipshare login status --json` (or `npx -y @skipshare/cli@0 login status --json` when the CLI is
-  not installed but Node.js is ready): exit 0 means logged in, and `email` is the account. Exit 3
-  means not logged in; keep `error.data.token_page_url` for step 4.
+- `skipshare --version`: the CLI is installed globally when this prints a version. A version with
+  `-dev.` (e.g. `0.1.2-dev.7`) is the dev build: run `skipshare update --json` to bring it to the
+  newest dev build. Any other version is the npm release, which talks to the production server:
+  treat the CLI as missing, so step 3 installs the dev build over it. If the update fails, carry
+  on with the installed version.
+- `skipshare login status --json`, only when the dev build is installed: exit 0 means logged in,
+  and `email` is the account. Exit 3 means not logged in; keep `error.data.token_page_url` for
+  step 4. Otherwise run it right after step 3 installs the CLI.
 
-In the rest of this skill, `skipshare` means the global command when it is installed, and
-`npx -y @skipshare/cli@0` otherwise. Always pass `--json`.
+In the rest of this skill, `skipshare` is the global command. Always pass `--json`.
 
 When everything is ready and logged in, skip to step 5 (settings) and say
 "SkipShare is already set up as `<email>`."
@@ -47,7 +47,7 @@ Show one short list of what will happen. Leave out the steps that are already do
 ```text
 Set up SkipShare:
 • Node.js: install v22 (you have v18, the CLI needs 20 or newer)
-• SkipShare CLI: install @skipshare/cli
+• SkipShare CLI: install the @skipshare/cli dev build
 • Login: you create a token in the SkipShare web app, I connect it
 Then pick your language and default team.
 ```
@@ -82,10 +82,12 @@ Never run `sudo`, never ask for a password, and never change system settings.
 
 ### SkipShare CLI
 
-Run `npm install -g @skipshare/cli@0`, then `skipshare --version`.
+Run `npm install -g https://te-fsharing-dev-cli.s3.ap-northeast-1.amazonaws.com/skipshare-cli-latest.tgz`, then `skipshare --version`.
 
-On a permission error (`EACCES`), do not retry with `sudo`. Use `npx -y @skipshare/cli@0` for the
-rest of the setup and tell the user once: "I'll run SkipShare through npx instead of installing it."
+On a permission error (`EACCES`), do not retry with `sudo`. The dev build cannot run through `npx`,
+so stop and say: "npm can't write its global folder. Fix the npm prefix
+(https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally),
+then reply **retry**."
 
 ## 4. Log in
 
@@ -115,7 +117,7 @@ Never print the clipboard, echo it, or store it in a variable or file.
 - Token rejected (exit 3) or empty: "❌ That token isn't valid. Copy the whole token again (or
   create a new one), then reply **ok**."
 - No clipboard tool, or the clipboard cannot be read here: ask the user to run `skipshare login`
-  (or `npx -y @skipshare/cli@0 login`) in their own terminal, paste the token at the hidden prompt,
+  in their own terminal, paste the token at the hidden prompt,
   then reply **ok**. Check with `login status --json`.
 
 ## 5. Settings

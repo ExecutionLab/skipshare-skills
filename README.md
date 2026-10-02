@@ -1,5 +1,8 @@
 # SkipShare skills
 
+> **Dev branch.** These skills drive the dev build of the CLI, which talks to the dev server and is
+> installed from `https://te-fsharing-dev-cli.s3.ap-northeast-1.amazonaws.com/skipshare-cli-latest.tgz`, not from npm. The release skills are on `main`.
+
 Agent skills that let coding agents (Claude Code, Cursor, Codex and others) set up
 [SkipShare](https://www.npmjs.com/package/@skipshare/cli) and send files by email for you. You ask
 in plain words ("send report.pdf to a@example.com"); the agent drives the `@skipshare/cli`
@@ -24,14 +27,14 @@ command-line client, shows you what it is about to send, and sends only after yo
 With the [skills](https://www.npmjs.com/package/skills) installer, which works with most agents:
 
 ```bash
-npx skills add ExecutionLab/skipshare-skills
+npx skills add https://github.com/ExecutionLab/skipshare-skills/tree/dev
 ```
 
 The installer asks which agents and which scope. To install for Claude Code and Codex in every
 project without the questions:
 
 ```bash
-npx skills add ExecutionLab/skipshare-skills -g -a claude-code -a codex
+npx skills add https://github.com/ExecutionLab/skipshare-skills/tree/dev -g -a claude-code -a codex
 ```
 
 Update to the latest version later (only these two skills):
@@ -87,9 +90,9 @@ Say **skipshare init** (or "set up SkipShare"). The agent:
 3. **Installs Node.js** with the tool you already have: nvm, Homebrew or winget. It never runs
    `sudo` or asks for a password. Without one of those tools it links you to
    [nodejs.org](https://nodejs.org) and continues when you reply **retry**.
-4. **Installs the CLI** with `npm install -g @skipshare/cli@0`, or updates an installed one with
-   `skipshare update`. If npm has no permission for global installs, it runs the CLI through `npx`
-   instead.
+4. **Installs the CLI** dev build with `npm install -g https://te-fsharing-dev-cli.s3.ap-northeast-1.amazonaws.com/skipshare-cli-latest.tgz`, or updates an
+   installed one with `skipshare update`. If npm has no permission for global installs, it asks
+   you to fix the npm prefix first.
 5. **Logs you in.** It gives you the link to the token page of your SkipShare web app. You create a
    personal access token, copy it, and reply **ok**. The agent pipes your clipboard straight into
    `skipshare login` (`pbpaste` on macOS, `Get-Clipboard` on Windows, `xclip` or `wl-paste` on
@@ -183,7 +186,7 @@ and links stay as they are.
 - A personal access token, created in the web app under **Settings → Personal access tokens**.
   `skipshare init` walks you through it.
 
-`skipshare-send` runs the CLI as `npx -y @skipshare/cli@0`, so a global install is optional.
+`skipshare-send` runs the global `skipshare` command, so the dev build must be installed.
 
 ## Security
 
@@ -199,9 +202,9 @@ and links stay as they are.
 
 | Problem                          | What to do                                                                              |
 | -------------------------------- | --------------------------------------------------------------------------------------- |
-| "Not logged in" or token expired | Say **skipshare init**, or run `npx -y @skipshare/cli@0 login` in your terminal         |
+| "Not logged in" or token expired | Say **skipshare init**, or run `skipshare login` in your terminal                       |
 | Node.js could not be installed   | Install the LTS from [nodejs.org](https://nodejs.org), then reply **retry**             |
-| `EACCES` on `npm install -g`     | Nothing to do: the agent falls back to `npx`                                            |
+| `EACCES` on `npm install -g`     | Fix the npm prefix (see the npm EACCES guide), then reply **retry**                     |
 | Clipboard login does not work    | Run `skipshare login` in your own terminal and paste the token at the hidden prompt     |
 | Wrong team on the card           | Name the team in your request, or change the default: "change my default team"          |
 | Replies in the wrong language    | "use Japanese" / "use English" changes the setting; "reply in …" changes this chat only |
