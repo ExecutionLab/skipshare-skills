@@ -7,7 +7,7 @@
       "expected_output": "Checks first, then one confirm listing the Node.js update, the CLI install and the login, and waits for ok. Nothing is installed yet.",
       "expectations": [
         "Runs `node -v` and checks for the `skipshare` command before replying",
-        "Shows one list that mentions updating Node.js (v18 is older than 20), installing the SkipShare CLI and logging in",
+        "Shows one list that mentions updating Node.js (v18 is older than 20), installing the SkipShare CLI, choosing the language and logging in",
         "Ends with `Reply **ok** to start, or **N** to cancel.`",
         "Runs no install command (`brew`, `npm install`, `nvm`, `winget`) before the user replies ok"
       ]
@@ -15,12 +15,12 @@
     {
       "id": 2,
       "prompt": "ok  (after the setup confirm; Node v18 from Homebrew, no CLI; login status error.data.token_page_url is https://app.example.com/settings/access-tokens)",
-      "expected_output": "Upgrades Node.js with brew, installs the CLI globally, then asks the user to create and copy a token without pasting it.",
+      "expected_output": "Upgrades Node.js with brew, installs the CLI globally, then asks the language question before any login step.",
       "expectations": [
         "Runs `brew upgrade node` (or `brew install node`) and checks `node -v` again",
         "Runs `npm install -g @skipshare/cli@0` and never uses `sudo`",
-        "Gives the link https://app.example.com/settings/access-tokens to create a token and asks the user to reply **ok** after copying it",
-        "Says not to paste the token into the chat"
+        "Then asks the language question as a numbered list with `1. English` and `2. 日本語 (Japanese)`",
+        "Does not show the token page or ask for a token yet"
       ]
     },
     {
@@ -31,7 +31,7 @@
         "Runs `pbpaste | skipshare login --json`",
         "Never prints, echoes or saves the clipboard content",
         "On exit 0 replies `✅ Logged in as` followed by the email",
-        "Then asks the language question as a numbered list with `1. English` and `2. 日本語 (Japanese)`"
+        "Then goes on to the default-team step (`team list --json`), not the language question"
       ]
     },
     {
@@ -66,19 +66,18 @@
     },
     {
       "id": 7,
-      "prompt": "2  (answer to the language question; team list has the user's own team plus Acme owned by boss@acme.com)",
-      "expected_output": "Sets Japanese, then asks the default-team question in Japanese with the personal team first.",
+      "prompt": "2  (answer to the language question right after the CLI install; login status error.data.token_page_url is https://share.skipapp.jp/settings/access-tokens)",
+      "expected_output": "Sets Japanese, then asks the user in Japanese to create and copy a token, with the full token page URL as a clickable plain-text link.",
       "expectations": [
         "Runs `config language ja --json`",
         "The following reply is in Japanese",
-        "The team list starts with `1.` for the personal team and lists `Acme (boss@acme.com)`",
-        "Does not list the row whose `role` is `owner` as a separate team",
-        "Mentions **skip** to keep the personal team"
+        "Gives the full link https://share.skipapp.jp/settings/access-tokens as plain text, not inside a code block or quote",
+        "Says not to paste the token into the chat and to reply **ok** after copying it"
       ]
     },
     {
       "id": 8,
-      "prompt": "2  (answer to the default-team question; option 2 is Acme, boss@acme.com)",
+      "prompt": "2  (answer to the default-team question after login; option 2 is Acme, boss@acme.com)",
       "expected_output": "Sets the default team, shows the ready summary and send examples.",
       "expectations": [
         "Runs `config default-team boss@acme.com --json`",
@@ -104,6 +103,17 @@
         "Asks the user to run `skipshare login` in their own terminal and paste the token at the hidden prompt",
         "Does not ask for the token in the chat",
         "After the next ok, runs `login status --json`"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "ok  (logged in as me@example.com; team list has the user's own team plus Acme owned by boss@acme.com)",
+      "expected_output": "Asks the default-team question with the personal team first.",
+      "expectations": [
+        "Runs `team list --json`",
+        "The team list starts with `1.` for the personal team and lists `Acme (boss@acme.com)`",
+        "Does not list the row whose `role` is `owner` as a separate team",
+        "Mentions **skip** to keep the personal team"
       ]
     }
   ]
