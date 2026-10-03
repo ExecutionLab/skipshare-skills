@@ -13,7 +13,7 @@ agent does the work. It checks first, shows **one** confirm, and starts only aft
 ## Reply language
 
 Until the CLI is installed, reply in the language the user writes in. Once it runs, use the
-`effective` value of `config language --json` (`en` English, `ja` Japanese), and after step 5 the
+`effective` value of `config language --json` (`en` English, `ja` Japanese), and after step 4 the
 language the user picked, for every line including status lines. Use another language only when
 the user tells you which language to reply in; writing in a language is not such a request.
 
@@ -30,12 +30,12 @@ Run these quietly, before saying anything:
   on with the installed version.
 - `skipshare login status --json`, only when the dev build is installed: exit 0 means logged in,
   and `email` is the account. Exit 3 means not logged in; keep `error.data.token_page_url` for
-  step 4. Otherwise run it right after step 3 installs the CLI.
+  step 5. Otherwise run it right after step 3 installs the CLI.
 
 In the rest of this skill, `skipshare` is the global command. Always pass `--json`.
 
-When everything is ready and logged in, skip to step 5 (settings) and say
-"SkipShare is already set up as `<email>`."
+When everything is ready and logged in, say "SkipShare is already set up as `<email>`.", then
+ask step 4 (language) and step 6 (default team), skipping the login.
 
 ## 2. One confirm
 
@@ -48,8 +48,9 @@ Show one short list of what will happen. Leave out the steps that are already do
 Set up SkipShare:
 • Node.js: install v22 (you have v18, the CLI needs 20 or newer)
 • SkipShare CLI: install the @skipshare/cli dev build
+• Language: English or 日本語
 • Login: you create a token in the SkipShare web app, I connect it
-Then pick your language and default team.
+Then pick your default team.
 ```
 
 Below the block: "Reply **ok** to start, or **N** to cancel."
@@ -89,21 +90,36 @@ so stop and say: "npm can't write its global folder. Fix the npm prefix
 (https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally),
 then reply **retry**."
 
-## 4. Log in
+## 4. Language
+
+Ask right after the CLI is installed, before the login, so the user reads the login steps and
+everything after them in their own language. The setting is stored locally and needs no login.
+Ask, as a numbered list:
+
+```text
+Which language should SkipShare use?
+1. English
+2. 日本語 (Japanese)
+```
+
+Run `config language en --json` or `config language ja --json`. From now on, reply in that language
+(translate this skill's replies when it is `ja`). Keep **ok**, **skip**, **retry**, **N**, file
+names, emails and links as they are.
+
+## 5. Log in
 
 The token is a password. **Never ask the user to paste it into the chat, and never put it on a
 command line.** It goes from the user's clipboard straight to the CLI.
 
-Say:
+Say this as plain text, not inside a code block or a quote, so the link can be clicked:
 
-```text
 Create a token here: <token_page_url>
 Copy it, then reply **ok**. Don't paste it here.
-```
 
-`token_page_url` comes from `error.data.token_page_url` of the exit-3 `login status --json` in
-step 1. When it is missing, say "in the SkipShare web app: Settings → Personal access tokens"
-instead of the link.
+`<token_page_url>` is the full URL from `error.data.token_page_url` of the exit-3
+`login status --json`, for example `https://dev.fsharing.exelab.asia/settings/access-tokens`. Never
+shorten it to a path or to "Settings → Personal access tokens". When it is missing, use
+https://dev.fsharing.exelab.asia/settings/access-tokens.
 
 After **ok**, pipe the clipboard into the CLI:
 
@@ -120,25 +136,7 @@ Never print the clipboard, echo it, or store it in a variable or file.
   in their own terminal, paste the token at the hidden prompt,
   then reply **ok**. Check with `login status --json`.
 
-## 5. Settings
-
-These two settings show the user what the CLI can do. Ask one at a time.
-
-### Language
-
-Ask, as a numbered list:
-
-```text
-Which language should SkipShare use?
-1. English
-2. 日本語 (Japanese)
-```
-
-Run `config language en --json` or `config language ja --json`. From now on, reply in that language
-(translate this skill's replies when it is `ja`). Keep **ok**, **skip**, **retry**, **N**, file
-names, emails and links as they are.
-
-### Default team
+## 6. Default team
 
 Run `team list --json`. With no teams besides the user's own, skip this question and say
 "Shares will come from you personally."
@@ -157,7 +155,7 @@ Reply a number, or **skip** to keep your personal team.
 Run `config default-team <owner_email> --json`, or `config default-team personal --json` for `1`.
 **skip** changes nothing.
 
-## 6. Done: show how to send
+## 7. Done: show how to send
 
 ```text
 ✅ SkipShare is ready.

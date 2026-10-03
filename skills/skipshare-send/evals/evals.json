@@ -54,7 +54,10 @@
       "id": 5,
       "prompt": "Case D. (No share has been discussed in this conversation.) Y",
       "expected_output": "Nothing is sent; the agent says there is nothing to send yet and asks what to share.",
-      "expectations": ["Runs no `send` command", "Replies that there is nothing to send yet"]
+      "expectations": [
+        "Runs no `send` command",
+        "Replies that there is nothing to send yet"
+      ]
     },
     {
       "id": 6,
@@ -386,6 +389,17 @@
         "Replies Share cancelled. No files were sent.",
         "Mentions skipshare init for later",
         "Runs no install or login command"
+      ]
+    },
+    {
+      "id": 38,
+      "prompt": "send some files for me",
+      "expected_output": "Asks for files and recipients in one message, steering to drag-and-drop or paths, with the image compression note.",
+      "expectations": [
+        "Asks `Which files, and who should get them?`",
+        "Asks to drag the files into the chat or paste their paths, not to send file names",
+        "Notes that images dropped into a desktop app may arrive as compressed copies, so paste image paths instead",
+        "Runs no `send` command yet"
       ]
     }
   ]
