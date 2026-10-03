@@ -18,7 +18,7 @@
       "expected_output": "Upgrades Node.js with brew, installs the CLI globally, then asks the language question before any login step.",
       "expectations": [
         "Runs `brew upgrade node` (or `brew install node`) and checks `node -v` again",
-        "Runs `npm install -g @skipshare/cli@0` and never uses `sudo`",
+        "Runs `npm install -g @skipshare/cli@1` and never uses `sudo`",
         "Then asks the language question as a numbered list with `1. English` and `2. 日本語 (Japanese)`",
         "Does not show the token page or ask for a token yet"
       ]
@@ -61,7 +61,7 @@
       "expectations": [
         "Does not retry with `sudo`",
         "Says it will run SkipShare through npx instead of installing it",
-        "Uses `npx -y @skipshare/cli@0` for the later commands, including `login --json`"
+        "Uses `npx -y @skipshare/cli@1` for the later commands, including `login --json`"
       ]
     },
     {

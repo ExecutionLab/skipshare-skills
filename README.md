@@ -78,8 +78,9 @@ Say **skipshare init** (or "set up SkipShare"). The agent:
    Set up SkipShare:
    • Node.js: install v22 (you have v18, the CLI needs 20 or newer)
    • SkipShare CLI: install @skipshare/cli
+   • Language: English or 日本語
    • Login: you create a token in the SkipShare web app, I connect it
-   Then pick your language and default team.
+   Then pick your default team.
    ```
 
    It starts only after you reply **ok**.
@@ -87,17 +88,19 @@ Say **skipshare init** (or "set up SkipShare"). The agent:
 3. **Installs Node.js** with the tool you already have: nvm, Homebrew or winget. It never runs
    `sudo` or asks for a password. Without one of those tools it links you to
    [nodejs.org](https://nodejs.org) and continues when you reply **retry**.
-4. **Installs the CLI** with `npm install -g @skipshare/cli@0`, or updates an installed one with
+4. **Installs the CLI** with `npm install -g @skipshare/cli@1`, or updates an installed one with
    `skipshare update`. If npm has no permission for global installs, it runs the CLI through `npx`
    instead.
-5. **Logs you in.** It gives you the link to the token page of your SkipShare web app. You create a
+5. **Sets your language** (English or 日本語), right after the install, so the login steps are
+   already in your language.
+6. **Logs you in.** It gives you the full, clickable link to the token page of your SkipShare web app. You create a
    personal access token, copy it, and reply **ok**. The agent pipes your clipboard straight into
    `skipshare login` (`pbpaste` on macOS, `Get-Clipboard` on Windows, `xclip` or `wl-paste` on
    Linux), so the token never appears in the chat. If the clipboard cannot be read, it asks you to
    run `skipshare login` in your own terminal instead.
-6. **Sets your language** (English or 日本語) and **default team**, the team your shares come from
+7. **Sets your default team**, the team your shares come from
    when you name none. Reply **skip** to keep sending personally.
-7. **Shows a few things to try** next.
+8. **Shows a few things to try** next.
 
 Already set up? It says so and goes straight to the settings. Run it again any time to change them.
 
@@ -183,7 +186,7 @@ and links stay as they are.
 - A personal access token, created in the web app under **Settings → Personal access tokens**.
   `skipshare init` walks you through it.
 
-`skipshare-send` runs the CLI as `npx -y @skipshare/cli@0`, so a global install is optional.
+`skipshare-send` runs the CLI as `npx -y @skipshare/cli@1`, so a global install is optional.
 
 ## Security
 
@@ -199,7 +202,7 @@ and links stay as they are.
 
 | Problem                          | What to do                                                                              |
 | -------------------------------- | --------------------------------------------------------------------------------------- |
-| "Not logged in" or token expired | Say **skipshare init**, or run `npx -y @skipshare/cli@0 login` in your terminal         |
+| "Not logged in" or token expired | Say **skipshare init**, or run `npx -y @skipshare/cli@1 login` in your terminal         |
 | Node.js could not be installed   | Install the LTS from [nodejs.org](https://nodejs.org), then reply **retry**             |
 | `EACCES` on `npm install -g`     | Nothing to do: the agent falls back to `npx`                                            |
 | Clipboard login does not work    | Run `skipshare login` in your own terminal and paste the token at the hidden prompt     |
@@ -224,7 +227,7 @@ expectations). Use them to check a change to a skill before releasing it.
 ## Versioning
 
 Skills are versioned with git tags (`v1.0.0`). A skill release pins one major version of
-`@skipshare/cli` (currently `@0`). When the CLI makes a breaking change, the skills get a new major
+`@skipshare/cli` (currently `@1`). When the CLI makes a breaking change, the skills get a new major
 version too.
 
 ## License

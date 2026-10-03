@@ -25,14 +25,14 @@ Run these quietly, before saying anything:
   or an update.
 - `skipshare --version`: the CLI is installed globally when this prints a version. Then run
   `skipshare update --json` to bring it to the newest release. A CLI older than 0.1.2 has no
-  `update` command: run `npm install -g @skipshare/cli@0` instead. If either fails, carry on with
+  `update` command: run `npm install -g @skipshare/cli@1` instead. If either fails, carry on with
   the installed version.
-- `skipshare login status --json` (or `npx -y @skipshare/cli@0 login status --json` when the CLI is
+- `skipshare login status --json` (or `npx -y @skipshare/cli@1 login status --json` when the CLI is
   not installed but Node.js is ready): exit 0 means logged in, and `email` is the account. Exit 3
   means not logged in; keep `error.data.token_page_url` for step 5.
 
 In the rest of this skill, `skipshare` means the global command when it is installed, and
-`npx -y @skipshare/cli@0` otherwise. Always pass `--json`.
+`npx -y @skipshare/cli@1` otherwise. Always pass `--json`.
 
 When everything is ready and logged in, say "SkipShare is already set up as `<email>`.", then
 ask step 4 (language) and step 6 (default team), skipping the login.
@@ -83,9 +83,9 @@ Never run `sudo`, never ask for a password, and never change system settings.
 
 ### SkipShare CLI
 
-Run `npm install -g @skipshare/cli@0`, then `skipshare --version`.
+Run `npm install -g @skipshare/cli@1`, then `skipshare --version`.
 
-On a permission error (`EACCES`), do not retry with `sudo`. Use `npx -y @skipshare/cli@0` for the
+On a permission error (`EACCES`), do not retry with `sudo`. Use `npx -y @skipshare/cli@1` for the
 rest of the setup and tell the user once: "I'll run SkipShare through npx instead of installing it."
 
 ## 4. Language
@@ -131,7 +131,7 @@ Never print the clipboard, echo it, or store it in a variable or file.
 - Token rejected (exit 3) or empty: "❌ That token isn't valid. Copy the whole token again (or
   create a new one), then reply **ok**."
 - No clipboard tool, or the clipboard cannot be read here: ask the user to run `skipshare login`
-  (or `npx -y @skipshare/cli@0 login`) in their own terminal, paste the token at the hidden prompt,
+  (or `npx -y @skipshare/cli@1 login`) in their own terminal, paste the token at the hidden prompt,
   then reply **ok**. Check with `login status --json`.
 
 ## 6. Default team
