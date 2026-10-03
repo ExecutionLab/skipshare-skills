@@ -1,6 +1,6 @@
 ---
 name: skipshare-setup
-description: Set up SkipShare for the user in one guided run, installing or updating Node.js, installing the `@skipshare/cli` client, logging in with a personal access token, then choosing the reply language and default team. Use when the user says "skipshare init", "set up SkipShare" or "install SkipShare", or when the skipshare-send skill finds the CLI missing or the user not logged in.
+description: Set up SkipShare for the user in one guided run, installing or updating Node.js, installing the `@skipshare/cli` client, choosing the reply language, logging in with a personal access token, then choosing the default team. Use when the user says "skipshare init", "set up SkipShare" or "install SkipShare", or when the skipshare-send skill finds the CLI missing or the user not logged in.
 ---
 
 # Set up SkipShare

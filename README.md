@@ -7,7 +7,7 @@ command-line client, shows you what it is about to send, and sends only after yo
 
 | Skill             | What it does                                                                                      |
 | ----------------- | ------------------------------------------------------------------------------------------------- |
-| `skipshare-setup` | Guided setup: installs Node.js and the CLI, logs you in, then sets your language and default team |
+| `skipshare-setup` | Guided setup: installs Node.js and the CLI, sets your language, logs you in, then sets your default team |
 | `skipshare-send`  | Sends local files to email recipients, personally or as one of your SkipShare teams, via the CLI  |
 
 ## Quick start
@@ -15,8 +15,8 @@ command-line client, shows you what it is about to send, and sends only after yo
 1. Install the skills (see [Install](#install)).
 2. Set up first: tell your agent **skipshare init** (or call the skill directly, see
    [Using the skills](#using-the-skills)).
-3. Reply **ok** to the one confirm, create a token in the web app when asked, copy it, reply **ok**.
-4. Pick your language and default team.
+3. Reply **ok** to the one confirm, then pick your language.
+4. Create a token in the web app when asked, copy it, reply **ok**, then pick your default team.
 5. Send: "Send report.pdf to a@example.com".
 
 ## Install
