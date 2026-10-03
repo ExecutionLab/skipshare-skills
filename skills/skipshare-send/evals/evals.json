@@ -402,6 +402,18 @@
         "Keeps the message to three short lines with the key actions in bold",
         "Runs no `send` command yet"
       ]
+    },
+    {
+      "id": 39,
+      "prompt": "ok  (the user called /skipshare-send with no files or recipients, the setup it suggested has just finished: logged in, language English, default team personal)",
+      "expected_output": "Shows the ready summary, then asks for files and recipients with the exact three-line question, image note included.",
+      "expectations": [
+        "Asks `Which files, and who should get them?` on its own line",
+        "Includes **Drag files in** or **paste their paths**, plus the **email addresses** line",
+        "Includes the image line: paste the path, images dropped into some desktop apps may arrive compressed",
+        "Does not merge the question into one paragraph or drop the image line",
+        "Runs no `send` command yet"
+      ]
     }
   ]
 }
