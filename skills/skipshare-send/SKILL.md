@@ -27,6 +27,14 @@ npx -y @skipshare/cli@1 <command> ... --json
   first problem instead.
 - Decide what to do from the **exit code** and `error.code`, never from the wording of `message`.
 
+## Sandboxed agents
+
+If you run commands in a sandbox (Claude Code, Codex and others), run every `skipshare` or `npx`
+command of this skill outside it from the first try. They need the network, read the token from
+the system keychain and write `~/.config/skipshare`, so inside a sandbox they fail and only cost a
+second run. In Claude Code, pass `dangerouslyDisableSandbox: true`. The user still approves each
+command as usual.
+
 ## Before sending: check the login
 
 Run `npx -y @skipshare/cli@1 login status --json`.
