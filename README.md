@@ -10,7 +10,7 @@ command-line client, shows you what it is about to send, and sends only after yo
 
 | Skill             | What it does                                                                                      |
 | ----------------- | ------------------------------------------------------------------------------------------------- |
-| `skipshare-setup` | Guided setup: installs Node.js and the CLI, logs you in, then sets your language and default team |
+| `skipshare-setup` | Guided setup: installs Node.js and the CLI, sets your language, logs you in, then sets your default team |
 | `skipshare-send`  | Sends local files to email recipients, personally or as one of your SkipShare teams, via the CLI  |
 
 ## Quick start
@@ -18,8 +18,8 @@ command-line client, shows you what it is about to send, and sends only after yo
 1. Install the skills (see [Install](#install)).
 2. Set up first: tell your agent **skipshare init** (or call the skill directly, see
    [Using the skills](#using-the-skills)).
-3. Reply **ok** to the one confirm, create a token in the web app when asked, copy it, reply **ok**.
-4. Pick your language and default team.
+3. Reply **ok** to the one confirm, then pick your language.
+4. Create a token in the web app when asked, copy it, reply **ok**, then pick your default team.
 5. Send: "Send report.pdf to a@example.com".
 
 ## Install
@@ -81,8 +81,9 @@ Say **skipshare init** (or "set up SkipShare"). The agent:
    Set up SkipShare:
    • Node.js: install v22 (you have v18, the CLI needs 20 or newer)
    • SkipShare CLI: install @skipshare/cli
+   • Language: English or 日本語
    • Login: you create a token in the SkipShare web app, I connect it
-   Then pick your language and default team.
+   Then pick your default team.
    ```
 
    It starts only after you reply **ok**.
@@ -93,14 +94,16 @@ Say **skipshare init** (or "set up SkipShare"). The agent:
 4. **Installs the CLI** dev build with `npm install -g https://te-fsharing-dev-cli.s3.ap-northeast-1.amazonaws.com/skipshare-cli-latest.tgz`, or updates an
    installed one with `skipshare update`. If npm has no permission for global installs, it asks
    you to fix the npm prefix first.
-5. **Logs you in.** It gives you the link to the token page of your SkipShare web app. You create a
+5. **Sets your language** (English or 日本語), right after the install, so the login steps are
+   already in your language.
+6. **Logs you in.** It gives you the full, clickable link to the token page of your SkipShare web app. You create a
    personal access token, copy it, and reply **ok**. The agent pipes your clipboard straight into
    `skipshare login` (`pbpaste` on macOS, `Get-Clipboard` on Windows, `xclip` or `wl-paste` on
    Linux), so the token never appears in the chat. If the clipboard cannot be read, it asks you to
    run `skipshare login` in your own terminal instead.
-6. **Sets your language** (English or 日本語) and **default team**, the team your shares come from
+7. **Sets your default team**, the team your shares come from
    when you name none. Reply **skip** to keep sending personally.
-7. **Shows a few things to try** next.
+8. **Shows a few things to try** next.
 
 Already set up? It says so and goes straight to the settings. Run it again any time to change them.
 

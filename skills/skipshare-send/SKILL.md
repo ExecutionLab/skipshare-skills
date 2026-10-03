@@ -41,8 +41,9 @@ Run `skipshare login status --json`.
   ```text
   SkipShare isn't set up on this computer yet:
   • Node.js: install v22 (you have v18, the CLI needs 20 or newer)
+  • Language: English or 日本語
   • Login: you create a token in the SkipShare web app, I connect it
-  Then pick your language and default team.
+  Then pick your default team.
   ```
 
   > Reply **ok** to set it up, then I'll send your files. Or **N** to cancel.
