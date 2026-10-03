@@ -142,7 +142,7 @@ appears on the Share card before anything is sent.
    > Who should receive these files?
    > Enter one or more email addresses.
 
-   > Which files? Drag them into the chat or paste their paths.
+   > Which files? **Drag them in** or **paste their paths**.
 
    A file the user drags or attaches into the chat is a file to send. This holds for images too:
    an attached image means "send this image", even when the message says nothing else. Never read
@@ -178,9 +178,9 @@ appears on the Share card before anything is sent.
    When both are missing, ask in one message:
 
    > Which files, and who should get them?
-   > Drag the files into the chat or paste their paths, then add the email addresses.
-   > Images dropped into a desktop app such as Claude may arrive as compressed, renamed copies, so
-   > the original can't be found. For images, paste the path instead.
+   > **Drag files in** or **paste their paths**, plus the **email addresses** that should receive them.
+   > For images, **paste the path**: images dropped into some desktop apps may arrive compressed
+   > (agent CLIs in a terminal are not affected).
 
    When it is unclear which of the user's local files are meant (the user says "2 files from
    ~/Photos" and the folder has 4), ask
