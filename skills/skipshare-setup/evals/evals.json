@@ -19,7 +19,7 @@
       "expectations": [
         "Runs `brew upgrade node` (or `brew install node`) and checks `node -v` again",
         "Runs `npm install -g https://te-fsharing-dev-cli.s3.ap-northeast-1.amazonaws.com/skipshare-cli-latest.tgz` and never uses `sudo`",
-        "Then asks the language question as a numbered list with `1. English` and `2. 日本語 (Japanese)`",
+        "Then asks the language question word for word: `Pick a default language for my responses:` followed by `1. English` and `2. 日本語 (Japanese)`",
         "Does not show the token page or ask for a token yet"
       ]
     },

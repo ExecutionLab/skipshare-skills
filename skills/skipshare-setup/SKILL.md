@@ -94,7 +94,7 @@ then reply **retry**."
 
 Ask right after the CLI is installed, before the login, so the user reads the login steps and
 everything after them in their own language. The setting is stored locally and needs no login.
-Ask, as a numbered list:
+Ask with exactly this text, word for word (do not rephrase it):
 
 ```text
 Pick a default language for my responses:
