@@ -144,6 +144,8 @@ appears on the Share card before anything is sent.
    > Enter one or more email addresses.
 
    > Which files? **Drag them in** or **paste their paths**.
+   > For images, **paste the path**: images dropped into some desktop apps may arrive compressed
+   > (agent CLIs in a terminal are not affected).
 
    A file the user drags or attaches into the chat is a file to send. This holds for images too:
    an attached image means "send this image", even when the message says nothing else. Never read
@@ -176,7 +178,8 @@ appears on the Share card before anything is sent.
    works). One match: use it; the card shows the name. None: `` `<name>` not found. Check the name. ``
    Several: list them numbered with folder and size and ask which one.
 
-   When both are missing, ask in one message:
+   When both are missing, ask in one message. Use these questions word for word, keeping all their
+   lines (the image line too), also when you come back here right after a setup run:
 
    > Which files, and who should get them?
    > **Drag files in** or **paste their paths**, plus the **email addresses** that should receive them.
