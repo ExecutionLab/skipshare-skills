@@ -97,7 +97,7 @@ everything after them in their own language. The setting is stored locally and n
 Ask, as a numbered list:
 
 ```text
-Which language should SkipShare use?
+Pick a default language for my responses:
 1. English
 2. 日本語 (Japanese)
 ```
