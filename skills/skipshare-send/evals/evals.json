@@ -398,7 +398,8 @@
       "expectations": [
         "Asks `Which files, and who should get them?`",
         "Asks to drag the files into the chat or paste their paths, not to send file names",
-        "Notes that images dropped into a desktop app may arrive as compressed copies, so paste image paths instead",
+        "Notes that images dropped into some desktop apps may arrive compressed, so paste image paths instead, and that agent CLIs in a terminal are not affected",
+        "Keeps the message to three short lines with the key actions in bold",
         "Runs no `send` command yet"
       ]
     }
