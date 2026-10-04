@@ -114,13 +114,13 @@ field the user already gave, and never drop one after an error.
 
 | Field      | Flag                           | Required | When the user said nothing          |
 | ---------- | ------------------------------ | -------- | ----------------------------------- |
+| Team       | `--team`                       | no       | what the dry run reports            |
 | Files      | positional paths               | yes      | ask                                 |
 | To         | `--to` (repeat)                | yes      | ask                                 |
 | CC         | `--cc` (repeat)                | no       | `None` (no flag)                    |
 | Expires in | `--expires-in <n>d`            | no       | the CLI default, marked `(default)` |
 | Subject    | `--subject`                    | no       | `None` (no flag)                    |
 | Message    | `--message` / `--message-file` | no       | `None` (no flag)                    |
-| From       | `--team`                       | no       | what the dry run reports            |
 
 Optional means the user may leave it empty, **not** that you may skip showing it. Every field
 appears on the Share card before anything is sent.
@@ -255,6 +255,9 @@ ANSI colours, no tables, no paragraphs.
 📤 Share files
 ━━━━━━━━━━━━━━━━━━━━━━━━
 
+Team
+  Your personal team
+
 Files (2)
   A.pdf
   B.pdf
@@ -264,9 +267,6 @@ To
 
 CC
   None
-
-From
-  Your personal team
 
 Expires in
   7 days (default)
@@ -287,8 +287,10 @@ Right below the code block, as ordinary chat text (so bold renders), two short p
 > Type **Y** or **yes** to confirm. **N** to cancel, or tell me what to change.
 
 - **Files:** up to 5 names. More than 5: the first 3, then `… +N more` (`show files` lists all).
-- **From:** always shown. `Your personal team` when sending personally (also for the user's own team; the CLI's own label), or the team as `<team_name> (<owner_email>)` (name from
-  `team list`; the owner email alone when you have not looked it up).
+- **Team:** always shown, first. `Your personal team` when sending personally (also for the
+  user's own team; the CLI's own label), or the team's `team_name` alone, without the owner email.
+  Take the name from `team list` (run it when you only have the owner email); the owner email only
+  when `team_name` is null.
 - **Expires in:** `N days`, plus `(default)` when the user did not choose it.
 - **Subject / Message:** `None` when empty. A long value shows at most 3 lines (about 200
   characters) followed by `… [N characters]`. The command still sends the full text.
@@ -455,7 +457,7 @@ Label them with letters, not numbers, so the numbers there still mean files:
 > B. Acme (owner@acme.com)
 
 No team left: keep the error as in the table, without the team lines. A pick (a number, or a letter
-here) sets the draft's From for this share only
+here) sets the draft's Team for this share only
 (`--team personal` or `--team <owner_email>`; never change the default here), then run the dry run
 and show a new card; the pick still needs `y`/`yes`. If that team is over its limit too, show this
 error again, leaving out every team already tried.
@@ -478,7 +480,7 @@ which is `Your personal team` already.
 >
 > Reply with a number.
 
-With no other teams, list only `1. Your personal team`. When the user picks, set the draft's From and show a
+With no other teams, list only `1. Your personal team`. When the user picks, set the draft's Team and show a
 new card; the pick still needs `y`/`yes`. Pass `--team personal` or `--team <owner_email>`.
 
 **When the broken team is the default team** (the user passed no `--team`, or `--team default`),
