@@ -357,7 +357,7 @@ Take the numbers from `error.data` when it is there, and from `error.message` ot
 | subject / message too long                   | The subject is **130** characters. / The limit is **100**.                                            | Reply with a shorter subject.                                                                  |
 | `access_expiration_exceeded`                 | Expiration is too long. / Your plan allows up to **4 days**.                                          | Reply **4** to use 4 days, or a smaller number.                                                |
 | `access_expiration_invalid`                  | `soon` is not a number of days.                                                                       | Reply with a number of days, from 1 to the plan's maximum.                                     |
-| `monthly_upload_new_files_exceeded`          | Only **3** files left this month. You are sending 5.                                                  | Reply with the 3 files to send now.                                                            |
+| `monthly_upload_new_files_exceeded`          | Only **3** files left this month. You are sending 5.                                                  | Reply with the 3 files to send now. Other teams: see "Limit reached" below.                   |
 | `monthly_upload_limit_exceeded`              | This month's **10** files are used up. (Add `Resets on [date].` from `resetAt`.)                      | Nothing can be sent until the reset. For more, upgrade in the SkipShare web app. Other teams: see "Limit reached" below. |
 | `quota_exceeded` / `over_quota_blocked`      | Not enough storage: **8 MB** needed, **5 MB** left. (No `needed`: Storage is full.)                   | See "Storage full" below.                                                                      |
 | not logged in (exit 3)                       | See "Before sending: check the login": suggest the setup and wait for **ok**.                         |                                                                                                |
@@ -402,6 +402,9 @@ order), and say how much to remove (`needed − remaining`):
 >
 > Reply with the numbers to remove (for example **1,2,3,...**), or delete old files in the SkipShare web
 > app and reply **retry**.
+> Or reply **team** to send all files from another team.
+
+Add the **team** line only when another team is left (see "Limit reached" below).
 
 Numbers (commas or spaces, or file names) drop those files from the draft; run the dry run again and show the card,
 or this error again with the new numbers if it still does not fit. Every file removed: reply
@@ -418,12 +421,13 @@ with one generic line:
 ### Limit reached: offer the other teams
 
 The monthly file limit and the storage belong to the team the share is sent from, so another team
-may still have room. On `monthly_upload_limit_exceeded`, `over_quota_blocked`, or `quota_exceeded`
-without `needed`, run `skipshare team list --json` and build the list as in Team errors, but leave
-out the team this draft sends from: the row with its `owner_email`, or `Your personal team` when it
-sends personally. The row with `role: "owner"` stays out as always.
+may still have room. On any of the limit errors below, run `skipshare team list --json` and build
+the list as in Team errors, but leave out the team this draft sends from: the row with its
+`owner_email`, or `Your personal team` when it sends personally. The row with `role: "owner"` stays
+out as always.
 
-At least one team left: show it in place of the last line.
+**Nothing left to send** (`monthly_upload_limit_exceeded`, `over_quota_blocked`, `quota_exceeded`
+without `needed`): with at least one team left, show the list in place of the last line.
 
 > ❌ This month's **3** files are used up.
 >
@@ -434,7 +438,18 @@ At least one team left: show it in place of the last line.
 >
 > Reply with a number, or upgrade in the SkipShare web app.
 
-No team left: keep the last line from the table. A pick sets the draft's From for this share only
+**Fewer files would fit** (`monthly_upload_new_files_exceeded`, `quota_exceeded` with `needed`):
+keep the error and its options, and with at least one team left add one more line, so the numbers
+there still mean files:
+
+> ❌ Only **3** files left this month. You are sending 5.
+>
+> Reply with the 3 files to send now.
+> Or reply **team** to send all files from another team.
+
+On **team**, show the list titled `Send from:` and ending `Reply with a number.`
+
+No team left: keep the error as in the table, without the list or the **team** line. A pick sets the draft's From for this share only
 (`--team personal` or `--team <owner_email>`; never change the default here), then run the dry run
 and show a new card; the pick still needs `y`/`yes`. If that team is over its limit too, show this
 error again, leaving out every team already tried.
