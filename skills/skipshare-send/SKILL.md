@@ -402,9 +402,12 @@ order), and say how much to remove (`needed − remaining`):
 >
 > Reply with the numbers to remove (for example **1,2,3,...**), or delete old files in the SkipShare web
 > app and reply **retry**.
-> Or reply **team** to send all files from another team.
+>
+> Or send all files from another team, reply with a letter:
+>
+> A. Acme (owner@acme.com)
 
-Add the **team** line only when another team is left (see "Limit reached" below).
+Add the team lines only when another team is left (see "Limit reached" below).
 
 Numbers (commas or spaces, or file names) drop those files from the draft; run the dry run again and show the card,
 or this error again with the new numbers if it still does not fit. Every file removed: reply
@@ -439,17 +442,20 @@ without `needed`): with at least one team left, show the list in place of the la
 > Reply with a number, or upgrade in the SkipShare web app.
 
 **Fewer files would fit** (`monthly_upload_new_files_exceeded`, `quota_exceeded` with `needed`):
-keep the error and its options, and with at least one team left add one more line, so the numbers
-there still mean files:
+keep the error and its options, and with at least one team left add the teams in the same message.
+Label them with letters, not numbers, so the numbers there still mean files:
 
 > ❌ Only **3** files left this month. You are sending 5.
 >
 > Reply with the 3 files to send now.
-> Or reply **team** to send all files from another team.
+>
+> Or send all files from another team, reply with a letter:
+>
+> A. Your personal team
+> B. Acme (owner@acme.com)
 
-On **team**, show the list titled `Send from:` and ending `Reply with a number.`
-
-No team left: keep the error as in the table, without the list or the **team** line. A pick sets the draft's From for this share only
+No team left: keep the error as in the table, without the team lines. A pick (a number, or a letter
+here) sets the draft's From for this share only
 (`--team personal` or `--team <owner_email>`; never change the default here), then run the dry run
 and show a new card; the pick still needs `y`/`yes`. If that team is over its limit too, show this
 error again, leaving out every team already tried.
