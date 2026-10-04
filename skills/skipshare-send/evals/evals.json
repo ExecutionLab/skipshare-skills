@@ -427,6 +427,18 @@
         "Ends with `Reply with a number, or upgrade in the SkipShare web app.`",
         "Does not change the default team"
       ]
+    },
+    {
+      "id": 41,
+      "prompt": "ok  (draft: 3 files, 11.9 MB, to giau@example.com from the Acme team (owner@acme.com); the dry run fails with quota_exceeded, needed 11.9 MB, remaining 6.9 MB; `skipshare team list` returns the user's own row (role owner) and Acme (owner@acme.com, role member))",
+      "expected_output": "Shows the storage error with the numbered files to remove, plus a line offering to send from another team; the team list is not numbered in the same message.",
+      "expectations": [
+        "Runs `skipshare team list --json`",
+        "Numbers the draft files with their sizes and says to remove at least **5 MB**",
+        "Adds `Or reply **team** to send all files from another team.`",
+        "Does not number the teams in the same message as the files",
+        "Does not change the default team"
+      ]
     }
   ]
 }
