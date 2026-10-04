@@ -414,6 +414,19 @@
         "Does not merge the question into one paragraph or drop the image line",
         "Runs no `send` command yet"
       ]
+    },
+    {
+      "id": 40,
+      "prompt": "ok  (draft: 1 image to giau@example.com from the user's personal team; the dry run fails with monthly_upload_limit_exceeded, limit 3; `skipshare team list` returns the user's own row (role owner) and Acme (owner@acme.com, role member))",
+      "expected_output": "Shows the monthly-limit error, then offers Acme as the team to send from instead, without the personal team.",
+      "expectations": [
+        "Says this month's **3** files are used up",
+        "Runs `skipshare team list --json`",
+        "Lists `Acme (owner@acme.com)` under `Send from another team instead:`",
+        "Does not list `Your personal team`, the team that hit the limit",
+        "Ends with `Reply with a number, or upgrade in the SkipShare web app.`",
+        "Does not change the default team"
+      ]
     }
   ]
 }
