@@ -11,7 +11,7 @@
         "The card shows `CC`, `Subject` and `Message` each as `None`",
         "The card shows `Expires in` with the dry run's `access_expiration` and `(default)`",
         "Right below the card's code block, outside it, the reply says `Type Y or yes to confirm.` and `N to cancel, or tell me what to change.`, and nothing follows it",
-        "The card shows a `From` block (`Your personal team` when personal, or the team)",
+      "The card shows a `Team` block first (`Your personal team` when personal, or the team name alone)",
         "The card is inside a text code block and contains no `**` or backticks"
       ]
     },
@@ -190,7 +190,7 @@
       "expectations": [
         "Runs `config default-team owner@acme.com --json` before the dry run",
         "Reruns the dry run without --team so the new default is used",
-        "Shows a new Share card with From: Acme (owner@acme.com) and waits for y/yes",
+        "Shows a new Share card with Team: Acme and waits for y/yes",
         "Does not send yet"
       ]
     },
