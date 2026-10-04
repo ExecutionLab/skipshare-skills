@@ -186,7 +186,7 @@
     {
       "id": 18,
       "prompt": "(continuing eval 13) User replies: 2 (user said: no cc, no subject, no message, default expiry)",
-      "expected_output": "Runs config default-team owner@acme.com --json, reruns the dry run without --team, shows a new Share card with From Acme (owner@acme.com)",
+      "expected_output": "Runs config default-team owner@acme.com --json, reruns the dry run without --team, shows a new Share card with Team Acme",
       "expectations": [
         "Runs `config default-team owner@acme.com --json` before the dry run",
         "Reruns the dry run without --team so the new default is used",
