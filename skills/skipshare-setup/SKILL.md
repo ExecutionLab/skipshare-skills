@@ -192,7 +192,7 @@ Codex.
 > - **Files**: drag them in or paste their paths
 > - **To**: the email addresses that should receive them
 > - **CC** (optional): more addresses to copy
-> - **Expires in** (optional): how many days the link works (default: 7 days)
+> - **Expires in** (optional): how many days the files are valid (default: 7 days)
 > - **Subject** and **Message** (optional): text for the email
 > - **Team** (optional): send from another team instead of your default
 >
