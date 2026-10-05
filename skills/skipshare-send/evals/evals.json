@@ -451,6 +451,19 @@
         "Does not suggest the setup, a new token or a login",
         "Runs no `send` command"
       ]
+    },
+    {
+      "id": 43,
+      "prompt": "send report.pdf to a@example.com  (`skipshare login status --json` exits 3 with error.code token_invalid and error.data.token_page_url https://share.skipapp.jp/settings/access-tokens)",
+      "expected_output": "Says the token is no longer valid, links the token page and asks for ok; no setup suggestion.",
+      "expectations": [
+        "Runs `skipshare login status --json`",
+        "Replies `🔑 Your SkipShare token is no longer valid (revoked or expired).`",
+        "Shows the full token page URL as clickable plain text",
+        "Does not say SkipShare isn't set up and does not list Node.js, language or team",
+        "Asks the user to reply **ok** once the new token is copied",
+        "Runs no `send` command before the login succeeds"
+      ]
     }
   ]
 }
