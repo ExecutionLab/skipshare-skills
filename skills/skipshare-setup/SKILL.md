@@ -181,14 +181,26 @@ Language: <English | 日本語>
 Default team: <Your personal team | team_name>
 ```
 
-Then two or three things the user can say next, for example:
+Then, below the block, show how to send, with exactly these lines (word for word). Write the
+command the way this agent starts a skill: `/skipshare-send` in Claude Code, `$skipshare-send` in
+Codex.
 
-- "Send report.pdf to a@example.com"
-- "Send the files in ./export to a@example.com, cc b@example.com, expire in 3 days"
-- "Send logo.png to a@example.com from the Design team"
+> **To send files**, run `/skipshare-send` with:
+>
+> - **Files**: drag them in or paste their paths
+> - **To**: the email addresses that should receive them
+> - **CC** (optional): more addresses to copy
+> - **Expires in** (optional): how many days the link works
+> - **Subject** and **Message** (optional): text for the email
+> - **Team** (optional): send from another team instead of your default
+>
+> Example:
+>
+> `/skipshare-send report.pdf to a@example.com, cc b@example.com, expire in 3 days, subject "Q3 report"`
+>
+> You can change the language or default team any time ("use Japanese", "change my default team").
 
-The sending itself is the skipshare-send skill's job. Mention that settings can be changed any time
-("change my default team", "use Japanese").
+Skip this guide when skipshare-send started the setup: it goes straight back to that share.
 
 ## Errors
 

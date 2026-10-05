@@ -125,6 +125,18 @@
         "Does not suggest the setup, a new token or a login",
         "Does not ask for the language or the default team"
       ]
+    },
+    {
+      "id": 13,
+      "prompt": "ok  (the user ran /skipshare-setup in Claude Code on its own; the default team was just picked: Your personal team)",
+      "expected_output": "Shows the ready block, then the guide for /skipshare-send with the fields and one example.",
+      "expectations": [
+        "Shows `✅ SkipShare is ready.` with Account, Language and Default team",
+        "Shows `**To send files**, run `/skipshare-send` with:`",
+        "Lists Files, To, CC, Expires in, Subject and Message, and Team, marking the last four optional",
+        "Shows the example `/skipshare-send report.pdf to a@example.com, cc b@example.com, expire in 3 days, subject \"Q3 report\"`",
+        "Runs no `send` command"
+      ]
     }
   ]
 }
