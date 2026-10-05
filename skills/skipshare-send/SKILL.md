@@ -54,7 +54,7 @@ Run `skipshare login status --json`.
 - Exit 0: logged in. `email` is the user's own SkipShare account. `default_team` is the owner email
   of the team used when `--team` is left out, or `null` when sends go out personally.
 - `node` or `skipshare` not found, `skipshare --version` without `-dev.` (the npm release), Node.js
-  older than 20, or exit 3 (not logged in, or the token expired or was revoked): SkipShare is not ready on this computer. **Suggest** the setup and stop; never
+  older than 20, or exit 3 with `error.code` `not_authenticated` (no token saved here): SkipShare is not ready on this computer. **Suggest** the setup and stop; never
   start it, install anything or open a login on your own. List only what is missing, then wait:
 
   ```text
@@ -79,6 +79,26 @@ Run `skipshare login status --json`.
     SkipShare under Settings → Personal access tokens), run `skipshare login` in
     their own terminal and paste it at the hidden prompt, then reply **done**; check
     `login status` again and carry on with the share. In CI, set `SKIPSHARE_TOKEN` instead.
+
+- Exit 3 with any other `error.code` (`unauthorized`, `token_invalid`, `token_expired`; for
+  `account_deactivated` see above): SkipShare is set up, but the saved token was revoked or has
+  expired. Do not suggest the setup or list missing steps. Reply this, then the full
+  `error.data.token_page_url` as plain text outside any code block or quote so it can be clicked:
+
+  ```text
+  🔑 Your SkipShare token is no longer valid (revoked or expired).
+  Create a new one and copy it:
+  ```
+
+  > Reply **ok** once copied, then I'll send your files. Or **N** to cancel.
+
+  - **ok** (also yes/done): the new token is on the clipboard. Log in exactly as step 5 of the
+    skipshare-setup skill does after its **ok**: pipe the clipboard into `skipshare login --json`,
+    never print it. Install nothing, and do not ask the language or default team again. Exit 0:
+    say "✅ Logged in as `<email>`." and go straight back to this share, keeping every file,
+    recipient and field the user already gave. Token rejected again: "❌ That token isn't valid.
+    Copy the whole token again (or create a new one), then reply **ok**."
+  - **N**: `Share cancelled. No files were sent.`
 
 Never ask the user to paste a token into the chat, and never put a token on a command line.
 
@@ -375,7 +395,7 @@ Take the numbers from `error.data` when it is there, and from `error.message` ot
 | `monthly_upload_limit_exceeded`              | This month's **10** files are used up. (Add `Resets on [date].` from `resetAt`.)                      | Nothing can be sent until the reset. For more, upgrade in the SkipShare web app. Other teams: see "Limit reached" below. |
 | `quota_exceeded` / `over_quota_blocked`      | Not enough storage: **8 MB** needed, **5 MB** left. (No `needed`: Storage is full.)                   | See "Storage full" below.                                                                      |
 | `account_deactivated` (exit 3)               | See "Deactivated account" above. Never suggest the setup.             |                                                                                                |
-| not logged in (exit 3)                       | See "Before sending: check the login": suggest the setup and wait for **ok**.                         |                                                                                                |
+| not logged in, token revoked/expired (exit 3) | See "Before sending: check the login": no token → suggest the setup; token rejected → ask for a new token. |                                                                                                |
 | `team_not_found`, `default_team_not_set`     | See "Team errors" below.                                                                              |                                                                                                |
 | network (exit 10)                            | Can't reach SkipShare.                                                                                | Check your connection, then reply **retry**.                                                   |
 | rate limit (8), server (9), upload twice (6) | SkipShare is busy right now. (`maintenance`: SkipShare is under maintenance.)                         | Reply **retry** in a few minutes.                                                              |
