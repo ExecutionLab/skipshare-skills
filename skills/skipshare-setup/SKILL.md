@@ -25,6 +25,17 @@ write outside the project (the global npm folder, `~/.config/skipshare`), need t
 the token in the system keychain, so inside a sandbox they fail and only cost a second run. In
 Claude Code, pass `dangerouslyDisableSandbox: true`. The user still approves each command as usual.
 
+## Deactivated account
+
+When any `skipshare` command fails with `error.code` `account_deactivated` (exit 3), stop the setup:
+the account is blocked, so a new token or another login cannot help. Reply exactly this, and
+do not suggest the setup, a new token or a login:
+
+```text
+❌ Your SkipShare account has been deactivated.
+Contact SkipShare support.
+```
+
 ## 1. Check what is already there
 
 Run these quietly, before saying anything:

@@ -36,6 +36,17 @@ the system keychain and write `~/.config/skipshare`, so inside a sandbox they fa
 second run. In Claude Code, pass `dangerouslyDisableSandbox: true`. The user still approves each
 command as usual.
 
+## Deactivated account
+
+When any `skipshare` command fails with `error.code` `account_deactivated` (exit 3), stop here:
+the account is blocked, so a new token or another login cannot help. Reply exactly this, and
+do not suggest the setup, a new token or a login:
+
+```text
+❌ Your SkipShare account has been deactivated.
+Contact SkipShare support.
+```
+
 ## Before sending: check the login
 
 Run `skipshare login status --json`.
@@ -363,6 +374,7 @@ Take the numbers from `error.data` when it is there, and from `error.message` ot
 | `monthly_upload_new_files_exceeded`          | Only **3** files left this month. You are sending 5.                                                  | Reply with the 3 files to send now. Other teams: see "Limit reached" below.                   |
 | `monthly_upload_limit_exceeded`              | This month's **10** files are used up. (Add `Resets on [date].` from `resetAt`.)                      | Nothing can be sent until the reset. For more, upgrade in the SkipShare web app. Other teams: see "Limit reached" below. |
 | `quota_exceeded` / `over_quota_blocked`      | Not enough storage: **8 MB** needed, **5 MB** left. (No `needed`: Storage is full.)                   | See "Storage full" below.                                                                      |
+| `account_deactivated` (exit 3)               | See "Deactivated account" above. Never suggest the setup.             |                                                                                                |
 | not logged in (exit 3)                       | See "Before sending: check the login": suggest the setup and wait for **ok**.                         |                                                                                                |
 | `team_not_found`, `default_team_not_set`     | See "Team errors" below.                                                                              |                                                                                                |
 | network (exit 10)                            | Can't reach SkipShare.                                                                                | Check your connection, then reply **retry**.                                                   |
