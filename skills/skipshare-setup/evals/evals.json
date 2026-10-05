@@ -115,6 +115,16 @@
         "Does not list the row whose `role` is `owner` as a separate team",
         "Mentions **skip** to keep the personal team"
       ]
+    },
+    {
+      "id": 12,
+      "prompt": "set up SkipShare  (the CLI is installed; `skipshare login status --json` exits 3 with error.code account_deactivated)",
+      "expected_output": "Stops the setup and says the account is deactivated and to contact SkipShare support.",
+      "expectations": [
+        "Replies `❌ Your SkipShare account has been deactivated.` then `Contact SkipShare support.`",
+        "Does not suggest the setup, a new token or a login",
+        "Does not ask for the language or the default team"
+      ]
     }
   ]
 }
