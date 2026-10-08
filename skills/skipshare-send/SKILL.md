@@ -17,6 +17,11 @@ branch: the dev CLI is not on npm, so `npx` cannot run it.
 skipshare <command> ... --json
 ```
 
+On macOS / Linux, when `skipshare` is not found, run it through the user's login shell before
+treating the CLI as missing: `"$SHELL" -lic 'skipshare <command> ... --json'`. The agent's shell can
+keep an older `PATH` than the user's terminal (for example right after skipshare-setup installed the
+CLI). When that works, run every `skipshare` command of this share the same way.
+
 - CLI requirement: Node.js 20 or newer, a dev build of `@skipshare/cli` installed with
   `npm install -g https://te-fsharing-dev-cli.s3.ap-northeast-1.amazonaws.com/skipshare-cli-latest.tgz`.
 - With `--json`, stdout holds exactly one JSON object. On success it is the result; a real send
@@ -53,7 +58,7 @@ Run `skipshare login status --json`.
 
 - Exit 0: logged in. `email` is the user's own SkipShare account. `default_team` is the owner email
   of the team used when `--team` is left out, or `null` when sends go out personally.
-- `node` or `skipshare` not found, `skipshare --version` without `-dev.` (the npm release), Node.js
+- `node` or `skipshare` not found (also through the login shell), `skipshare --version` without `-dev.` (the npm release), Node.js
   older than 20, or exit 3 with `error.code` `not_authenticated` (no token saved here): SkipShare is not ready on this computer. **Suggest** the setup and stop; never
   start it, install anything or open a login on your own. List only what is missing, then wait:
 

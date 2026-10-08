@@ -137,6 +137,18 @@
         "Shows the example `/skipshare-send report.pdf to a@example.com, cc b@example.com, expire in 3 days, subject \"Q3 report\"`",
         "Runs no `send` command"
       ]
+    },
+    {
+      "id": 14,
+      "prompt": "ok  (macOS, zsh, Node.js from Vite+. The agent's own `npm` points to an old nvm Node 14, but `\"$SHELL\" -lic 'node -v'` prints v24.21.0. The CLI install succeeds through the login shell, yet `\"$SHELL\" -lic 'command -v skipshare'` prints nothing; `\"$SHELL\" -lic 'npm prefix -g'` prints /Users/u/.vite-plus/js_runtime/node/24.21.0)",
+      "expected_output": "Installs through the user's login shell, then offers to add the npm global bin folder to ~/.zshrc and waits for ok.",
+      "expectations": [
+        "Runs `node -v`, `npm install -g ...` and `skipshare --version` through `\"$SHELL\" -lic '...'`, not with the agent's own npm",
+        "Does not install Node.js (the login shell already has v24)",
+        "Shows the line `export PATH=\"/Users/u/.vite-plus/js_runtime/node/24.21.0/bin:$PATH\"` and names `~/.zshrc`",
+        "Asks the user to reply **ok** or **skip**, and edits no file before the reply",
+        "Carries on with the full path to `skipshare` for the next steps"
+      ]
     }
   ]
 }

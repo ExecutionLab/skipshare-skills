@@ -25,6 +25,21 @@ write outside the project (the global npm folder, `~/.config/skipshare`), need t
 the token in the system keychain, so inside a sandbox they fail and only cost a second run. In
 Claude Code, pass `dangerouslyDisableSandbox: true`. The user still approves each command as usual.
 
+## Use the user's own shell (macOS / Linux)
+
+The agent's shell can see a different Node.js and `PATH` than the user's terminal (Vite+, nvm,
+volta, a `PATH` captured before the install). To put the CLI where the user's terminal finds it,
+run every `node`, `npm`, `nvm`, `brew` and `skipshare` command of this skill through the user's
+login shell:
+
+```bash
+"$SHELL" -lic 'npm install -g ...'
+"$SHELL" -lic 'skipshare login status --json'
+```
+
+Read the result from stdout and ignore shell startup messages on stderr. On Windows, run the
+commands as usual. Edit a shell file only as step 3 describes, after the user's **ok**.
+
 ## Deactivated account
 
 When any `skipshare` command fails with `error.code` `account_deactivated` (exit 3), stop the setup:
@@ -102,7 +117,28 @@ Never run `sudo`, never ask for a password, and never change system settings.
 
 ### SkipShare CLI
 
-Run `npm install -g https://te-fsharing-dev-cli.s3.ap-northeast-1.amazonaws.com/skipshare-cli-latest.tgz`, then `skipshare --version`.
+Run `npm install -g https://te-fsharing-dev-cli.s3.ap-northeast-1.amazonaws.com/skipshare-cli-latest.tgz`, then `skipshare --version`,
+both through the user's login shell (see "Use the user's own shell"). The version printing there
+means `skipshare` works in the user's terminal too.
+
+When the install succeeded but the login shell still cannot find `skipshare`, npm's global folder
+is not on the user's `PATH` (common with Vite+). Run `"$SHELL" -lic 'npm prefix -g'` and ask:
+
+```text
+The CLI is installed, but your terminal can't find `skipshare` yet.
+I'll add this line to <~/.zshrc | ~/.bashrc>:
+export PATH="<prefix>/bin:$PATH"
+```
+
+Below the block: "Reply **ok** to add it, or **skip** to leave your shell files alone."
+
+- **ok**: append that line to `~/.zshrc` (zsh) or `~/.bashrc` (bash), unless the file already has
+  it, then check again with `"$SHELL" -lic 'command -v skipshare'`. Say: "Done. `skipshare` works
+  in new terminal windows."
+- **skip**, or another shell: say once "To run `skipshare` in your terminal, add `<prefix>/bin`
+  to your PATH."
+
+Either way, carry on with the full path `<prefix>/bin/skipshare` for the rest of the setup.
 
 On a permission error (`EACCES`), do not retry with `sudo`. The dev build cannot run through `npx`,
 so stop and say: "npm can't write its global folder. Fix the npm prefix
