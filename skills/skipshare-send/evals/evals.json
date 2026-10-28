@@ -464,6 +464,27 @@
         "Asks the user to reply **ok** once the new token is copied",
         "Runs no `send` command before the login succeeds"
       ]
+    },
+    {
+      "id": 44,
+      "prompt": "send report.pdf to a@example.com, subject Q3, message hi, 7 days, yes  (send exits 0 with usage.storage {used: 10200547328, limit: 10737418240, remaining: 536870912})",
+      "expected_output": "Normal success block ending with a Storage left section: 512 MB of 10 GB.",
+      "expectations": [
+        "Shows the success block with the Download URL",
+        "Ends the block with `Storage left` and `512 MB of 10 GB`",
+        "Does not print the JSON"
+      ]
+    },
+    {
+      "id": 45,
+      "prompt": "how much storage do I have left on SkipShare?  (`skipshare usage --json` exits 0 with storage {used: 1073741824, limit: 10737418240, remaining: 9663676416} and monthly_files {used: 12, limit: 50, remaining: 38})",
+      "expected_output": "Runs the usage command and answers in one or two lines: 9 GB of 10 GB left, 38 of 50 files this month.",
+      "expectations": [
+        "Runs `skipshare usage --json`, not a send or dry run",
+        "Says 9 GB of 10 GB storage left",
+        "Says 38 of 50 files left this month",
+        "Answers in at most two lines, no JSON"
+      ]
     }
   ]
 }

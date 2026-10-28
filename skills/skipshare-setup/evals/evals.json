@@ -30,7 +30,7 @@
       "expectations": [
         "Runs `pbpaste | skipshare login --json`",
         "Never prints, echoes or saves the clipboard content",
-        "On exit 0 replies `✅ Logged in as` followed by the email",
+        "On exit 0 replies `✅ Token saved on this computer. You're logged in as` followed by the email",
         "Then goes on to the default-team step (`team list --json`), not the language question"
       ]
     },

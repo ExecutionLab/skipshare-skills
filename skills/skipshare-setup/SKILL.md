@@ -169,7 +169,14 @@ command line.** It goes from the user's clipboard straight to the CLI.
 Say this as plain text, not inside a code block or a quote, so the link can be clicked:
 
 Create a token here: <token_page_url>
-Copy it, then reply **ok**. Don't paste it here.
+Copy it, then reply **ok**. Don't paste it here. When you reply **ok**, I save the token you copied
+on this computer.
+
+When the language is `ja`, use exactly this wording:
+
+こちらでトークンを作成してください: <token_page_url>
+トークンをコピーしたら **ok** と返信してください。トークンはここに貼り付けないでください。
+**ok** と返信すると、コピーしたトークンを端末に保存します。
 
 `<token_page_url>` is the full URL from `error.data.token_page_url` of the exit-3
 `login status --json`, for example `https://dev.fsharing.exelab.asia/settings/access-tokens`. Never
@@ -184,7 +191,8 @@ After **ok**, pipe the clipboard into the CLI:
 
 Never print the clipboard, echo it, or store it in a variable or file.
 
-- Exit 0: say "✅ Logged in as `<email>`." and go on.
+- Exit 0: say "✅ Token saved on this computer. You're logged in as `<email>`." (`ja`:
+  「✅ トークンをこの端末に保存しました。`<email>` としてログインしています。」) and go on.
 - Token rejected (exit 3) or empty: "❌ That token isn't valid. Copy the whole token again (or
   create a new one), then reply **ok**."
 - No clipboard tool, or the clipboard cannot be read here: ask the user to run `skipshare login`
