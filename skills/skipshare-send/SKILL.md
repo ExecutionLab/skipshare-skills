@@ -100,7 +100,8 @@ Run `skipshare login status --json`.
   - **ok** (also yes/done): the new token is on the clipboard. Log in exactly as step 5 of the
     skipshare-setup skill does after its **ok**: pipe the clipboard into `skipshare login --json`,
     never print it. Install nothing, and do not ask the language or default team again. Exit 0:
-    say "✅ Logged in as `<email>`." and go straight back to this share, keeping every file,
+    say "✅ Token saved on this computer. You're logged in as `<email>`." (`ja`: as in skipshare-setup)
+    and go straight back to this share, keeping every file,
     recipient and field the user already gave. Token rejected again: "❌ That token isn't valid.
     Copy the whole token again (or create a new one), then reply **ok**."
   - **N**: `Share cancelled. No files were sent.`
@@ -556,6 +557,9 @@ Expires in
 
 Download URL
   https://…/files/abc123
+
+Storage left
+  512 MB of 10 GB
 ```
 
 When the language is `ja`, use exactly this wording:
@@ -574,7 +578,16 @@ When the language is `ja`, use exactly this wording:
 
 ダウンロード URL
   https://…/files/abc123
+
+残り容量
+  512 MB（全体 10 GB）
 ```
+
+`Storage left` comes from `usage.storage` in the send result (`remaining` and `limit`, in bytes).
+Show sizes with 1024-based units, one decimal at most, dropping `.0`: `512 MB`, `9.5 GB`. When
+`limit` is `null` the plan has no storage limit: write `No limit (<used> used)` (`ja`:
+`上限なし（<used> 使用中）`). Leave the whole `Storage left` block out when `usage` or
+`usage.storage` is missing or `null`: the share was still sent.
 
 The date in brackets is when the link stops working, in this computer's local time. SkipShare sets
 it to the send time plus the chosen days, so compute it right after the send succeeds (`N` is the
@@ -595,6 +608,15 @@ not claim the email has arrived. Exit 11 (saved, email failed) replaces the firs
 `⚠️ Shared, but the email to recipients failed.` (`ja`: `⚠️ 共有は完了しましたが、宛先へのメール送信に失敗しました。`)
 and adds, after the block: `Send them the link yourself.` (`ja`: `お手数ですが、ダウンロード URL を宛先に直接お送りください。`)
 Never offer **retry** here: the share exists, and sending again makes a second one.
+
+## Storage left, without sending
+
+When the user asks how much storage or how many files they have left, run
+`skipshare usage --json` (add `--team <owner_email|personal>` when they name a team; without it the
+numbers are for the team their sends go from). It returns `{ team, storage, monthly_files }`, each
+`{ used, limit, remaining }`; `limit` `null` means no limit, and `storage` `null` means the server
+can't read it right now. Answer in one or two lines, e.g. `512 MB of 10 GB storage left · 38 of 50
+files left this month.` Exit 4 `team_not_found`: list the teams as in Team errors.
 
 ## Handling each failure (for you, not for the user)
 
