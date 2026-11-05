@@ -468,34 +468,34 @@
     {
       "id": 44,
       "prompt": "send report.pdf to a@example.com, subject Q3, message hi, 7 days, yes  (send exits 0 with usage.storage {used: 10200547328, limit: 10737418240, remaining: 536870912})",
-      "expected_output": "Normal success block, then a separate Usage box with a 20-cell storage bar at 95% and 512 MB left.",
+      "expected_output": "Success card with a compact Usage section inside it: one Storage line at 95% with a warning mark. No separate box.",
       "expectations": [
         "Shows the success block with the Download URL",
-        "Shows a separate `📊 Usage` block with a `Storage` bar of 20 `█`/`░` cells and `95%` with a warning mark",
-        "Says `512 MB left` of 10 GB, and has no right-hand border",
+        "Has a `Usage` section inside the same block with one line `Storage  95% · 9.5 GB / 10 GB ⚠️`",
+        "Draws no bar, no separate `📊 Usage` box and no right-hand border",
         "Does not print the JSON"
       ]
     },
     {
       "id": 46,
       "prompt": "send report.pdf to a@example.com, 7 days, yes  (send exits 0 with usage.storage {used: 1073741824, limit: 10737418240, remaining: 9663676416}, usage.monthly_files {used: 3, limit: 100, remaining: 97}, usage.monthly_upload {used: 6442450944, limit: 53687091200, remaining: 47244640256}, usage.monthly_download {used: 2684354560, limit: 53687091200, remaining: 51002736640}, usage.reset_at 2026-12-01T00:00:00.000Z)",
-      "expected_output": "Usage box mirrors the web: Storage, Files this month, Upload, Download bars, then a Resets on line.",
+      "expected_output": "All quotas under 70%: the success card has no Usage section at all.",
       "expectations": [
-        "Shows `Upload` and `Download` sections, each with a 20-cell bar and a percent",
-        "Upload is `12%` with 2 filled cells and reads `6 GB used of 50 GB`; Download is `5%` with 1 filled cell and reads `2.5 GB used of 50 GB`",
-        "Ends with `Resets on 12/01/2026` (local date, no time) above the closing rule",
-        "Has no right-hand border"
+        "Shows the success block with the Download URL",
+        "Has no `Usage` section, bar, reset date or separate usage box, because every quota is below 70%",
+        "Does not print the JSON"
       ]
     },
     {
       "id": 45,
-      "prompt": "how much storage do I have left on SkipShare?  (`skipshare usage --json` exits 0 with storage {used: 1073741824, limit: 10737418240, remaining: 9663676416} and monthly_files {used: 12, limit: 50, remaining: 38})",
-      "expected_output": "Runs the usage command and answers in one or two lines: 9 GB of 10 GB left, 38 of 50 files this month.",
+      "prompt": "show my SkipShare usage  (`skipshare usage --json` exits 0 with storage {used: 1073741824, limit: 10737418240, remaining: 9663676416}, monthly_files {used: 12, limit: 50, remaining: 38}, monthly_upload {used: 6442450944, limit: 53687091200, remaining: 47244640256}, monthly_download {used: 2684354560, limit: 53687091200, remaining: 51002736640}, reset_at 2026-12-01T00:00:00.000Z)",
+      "expected_output": "Full Usage box: Storage, Files this month, Upload, Download bars with `used / limit` wording, and a Resets on line.",
       "expectations": [
         "Runs `skipshare usage --json`, not a send or dry run",
-        "Says 9 GB of 10 GB storage left",
-        "Says 38 of 50 files left this month",
-        "Answers in at most two lines, no JSON"
+        "Shows a `📊 Usage` box with four sections, each a 20-cell bar with a percent",
+        "Storage reads `1 GB / 10 GB` with 10%, Files `12 / 50`, Upload `6 GB / 50 GB` with 2 filled cells, Download `2.5 GB / 50 GB` with 1 filled cell",
+        "Has no `left` or `remaining` wording and no right-hand border",
+        "Ends with `Resets on 12/01/2026`"
       ]
     }
   ]

@@ -559,32 +559,12 @@ Download URL
   https://…/files/abc123
 ```
 
-Then, as a second ` ```text ` block right below it, the Usage box (rules after the `ja` blocks):
+Then, only when a quota is nearly used up (rules after the `ja` block), add a `Usage` section at the
+end of the same block, before the closing code fence:
 
 ```text
-━━━━━━━━━━━━━━━━━━━━━━━━
-📊 Usage
-━━━━━━━━━━━━━━━━━━━━━━━━
-
-Storage
-  ░░░░░░░░░░░░░░░░░░░░  <1%
-  508 KB used of 10 GB · 9.5 GB left
-
-Files this month
-  █░░░░░░░░░░░░░░░░░░░  3%
-  3 used of 100 · 97 left
-
-Upload
-  ██░░░░░░░░░░░░░░░░░░  12%
-  6 GB used of 50 GB · 44 GB left
-
-Download
-  █░░░░░░░░░░░░░░░░░░░  5%
-  2.5 GB used of 50 GB · 47.5 GB left
-
-Resets on 12/01/2026
-
-━━━━━━━━━━━━━━━━━━━━━━━━
+Usage
+  Storage  95% · 9.5 GB / 10 GB ⚠️
 ```
 
 When the language is `ja`, use exactly this wording:
@@ -605,51 +585,26 @@ When the language is `ja`, use exactly this wording:
   https://…/files/abc123
 ```
 
+`ja` Usage section:
+
 ```text
-━━━━━━━━━━━━━━━━━━━━━━━━
-📊 利用状況
-━━━━━━━━━━━━━━━━━━━━━━━━
-
-ストレージ
-  ░░░░░░░░░░░░░░░░░░░░  <1%
-  508 KB 使用 / 全体 10 GB · 残り 9.5 GB
-
-今月のファイル数
-  █░░░░░░░░░░░░░░░░░░░  3%
-  3 件使用 / 全体 100 件 · 残り 97 件
-
-アップロード
-  ██░░░░░░░░░░░░░░░░░░  12%
-  6 GB 使用 / 全体 50 GB · 残り 44 GB
-
-ダウンロード
-  █░░░░░░░░░░░░░░░░░░░  5%
-  2.5 GB 使用 / 全体 50 GB · 残り 47.5 GB
-
-リセット日 2026/12/01
-
-━━━━━━━━━━━━━━━━━━━━━━━━
+利用状況
+  ストレージ  95% · 9.5 GB / 10 GB ⚠️
 ```
 
-**Usage box.** It mirrors the usage box in the SkipShare web app. The numbers come from the send
-result: `usage.storage`, `usage.monthly_upload` and `usage.monthly_download` (bytes), and
-`usage.monthly_files` (a count); each is `{ used, limit, remaining }`. `usage.reset_at` is when
-the monthly numbers reset. Show sizes with 1024-based units, one
-decimal at most, dropping `.0`: `508 KB`, `9.5 GB`.
+**Usage section in the card.** The success card is the main message, so usage stays small here.
+It is read from the send result: `usage.storage`, `usage.monthly_upload`, `usage.monthly_download`
+(bytes) and `usage.monthly_files` (a count); each is `{ used, limit, remaining }`.
 
-- **Never draw a right border or a box frame.** Emoji and Japanese text are wider than one
-  column, so a right edge never lines up. Use only the `━` rules shown, like the Share card.
-- **The bar** is exactly 20 cells: `█` for used, `░` for free. Percent is `used / limit`, rounded
-  to a whole number. Filled cells are `round(percent / 5)`, so the cells and the number agree.
-  Below 1% but above 0, write `<1%` and fill no cell. At 0 write `0%`.
-- **`limit` is `null`** (no limit): no bar, one line `No limit (<used> used)` (`ja`:
-  `上限なし（<used> 使用中）`).
-- **90% or more:** put `⚠️` after the percent.
-- **Reset line:** `Resets on <date>` (`ja`: `リセット日 <date>`) from `usage.reset_at`, local date
-  only, no time, in the date format above. Leave it out when `reset_at` is `null`.
-- **Missing data:** leave out the section whose value is missing or `null` (an older server leaves
-  `monthly_upload`, `monthly_download` and `reset_at` out); when all are missing leave out the
-  whole box. The share was still sent. Show only what the CLI returned.
+- Show a quota only when it is **70% or more** used (`used / limit`, rounded to a whole number),
+  one line each: `<label>  <percent> · <used> / <limit>`, labels `Storage`, `Files this month`,
+  `Upload`, `Download` (`ja`: `ストレージ`, `今月のファイル数`, `アップロード`, `ダウンロード`).
+  Add `⚠️` after the line at 90% or more.
+- Nothing is at 70% or more, or `limit` is `null`, or the value is missing: leave the whole `Usage`
+  section out. Do not draw a bar, a separate box or a reset date after a send.
+- Sizes use 1024-based units, one decimal at most, dropping `.0`: `508 KB`, `9.5 GB`. Counts are
+  plain numbers: `95 / 100`.
+- Never draw a right border. Emoji and Japanese text are wider than one column.
 
 The date in brackets is when the link stops working, in this computer's local time. SkipShare sets
 it to the send time plus the chosen days, so compute it right after the send succeeds (`N` is the
@@ -673,13 +628,53 @@ Never offer **retry** here: the share exists, and sending again makes a second o
 
 ## Storage left, without sending
 
-When the user asks how much storage or how many files they have left, run
+When the user asks about their usage, storage, or how much they have left, run
 `skipshare usage --json` (add `--team <owner_email|personal>` when they name a team; without it the
 numbers are for the team their sends go from). It returns `{ team, storage, monthly_files, monthly_upload,
 monthly_download, reset_at }`, each quota `{ used, limit, remaining }`; `limit` `null` means no
-limit, and `storage` `null` means the server can't read it right now (`monthly_upload` and
-`monthly_download` are `null` on an older server). Answer in one or two lines, e.g. `512 MB of 10 GB storage left · 38 of 50
-files left this month.` Exit 4 `team_not_found`: list the teams as in Team errors.
+limit, and `storage` `null` means the server can't read it right now (`monthly_upload`,
+`monthly_download` and `reset_at` are `null` on an older server). Exit 4 `team_not_found`: list the
+teams as in Team errors. Answer with the full Usage box, the same as the usage box in the web app:
+
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━
+📊 Usage
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Storage
+  ░░░░░░░░░░░░░░░░░░░░  <1%
+  508 KB / 10 GB
+
+Files this month
+  █░░░░░░░░░░░░░░░░░░░  3%
+  3 / 100
+
+Upload
+  ██░░░░░░░░░░░░░░░░░░  12%
+  6 GB / 50 GB
+
+Download
+  █░░░░░░░░░░░░░░░░░░░  5%
+  2.5 GB / 50 GB
+
+Resets on 12/01/2026
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+`ja`: title `📊 利用状況`, labels `ストレージ`, `今月のファイル数`, `アップロード`, `ダウンロード`, and `リセット日 2026/12/01`.
+
+- **The bar** is exactly 20 cells: `█` for used, `░` for free. Percent is `used / limit`, rounded
+  to a whole number. Filled cells are `round(percent / 5)`, so the cells and the number agree.
+  Below 1% but above 0, write `<1%` and fill no cell. At 0 write `0%`.
+- **`limit` is `null`** (no limit): no bar, one line `No limit (<used> used)` (`ja`:
+  `上限なし（<used> 使用中）`).
+- **90% or more:** put `⚠️` after the percent.
+- **Reset line:** `Resets on <date>` from `reset_at`, local date only, no time. Leave it out when
+  `reset_at` is `null`.
+- Leave out a section whose value is `null`; show only what the CLI returned.
+- Never draw a right border (emoji and Japanese text are wider than one column). Sizes use
+  1024-based units, one decimal at most, dropping `.0`.
 
 ## Handling each failure (for you, not for the user)
 
