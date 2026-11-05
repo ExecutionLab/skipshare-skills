@@ -472,7 +472,7 @@
       "expectations": [
         "Shows the success block with the Download URL",
         "Inside the same block shows `📊 Usage` with exactly `Storage`, `Files` and `Upload` lines in `used / limit` form, right-aligned",
-        "Storage line reads `9.5 GB / 10 GB` with a `⚠️`",
+        "Storage line reads `9.5 GB / 10 GB` with no warning mark",
         "Has no bars, no reset date and no right-hand border",
         "Does not print the JSON"
       ]
