@@ -478,11 +478,11 @@
     },
     {
       "id": 46,
-      "prompt": "send report.pdf to a@example.com, 7 days, yes  (send exits 0 with usage.storage {used: 1073741824, limit: 10737418240, remaining: 9663676416}, usage.monthly_files {used: 3, limit: 100, remaining: 97}, usage.monthly_upload {used: 1288490189, limit: 53687091200, remaining: 52398601011}, usage.monthly_download {used: 314572800, limit: 53687091200, remaining: 53372518400}, usage.reset_at 2026-12-01T00:00:00.000Z)",
+      "prompt": "send report.pdf to a@example.com, 7 days, yes  (send exits 0 with usage.storage {used: 1073741824, limit: 10737418240, remaining: 9663676416}, usage.monthly_files {used: 3, limit: 100, remaining: 97}, usage.monthly_upload {used: 6442450944, limit: 53687091200, remaining: 47244640256}, usage.monthly_download {used: 2684354560, limit: 53687091200, remaining: 51002736640}, usage.reset_at 2026-12-01T00:00:00.000Z)",
       "expected_output": "Usage box mirrors the web: Storage, Files this month, Upload, Download bars, then a Resets on line.",
       "expectations": [
         "Shows `Upload` and `Download` sections, each with a 20-cell bar and a percent",
-        "Upload reads `1.2 GB used of 50 GB`, Download reads `300 MB used of 50 GB`",
+        "Upload is `12%` with 2 filled cells and reads `6 GB used of 50 GB`; Download is `5%` with 1 filled cell and reads `2.5 GB used of 50 GB`",
         "Ends with `Resets on 12/01/2026` (local date, no time) above the closing rule",
         "Has no right-hand border"
       ]

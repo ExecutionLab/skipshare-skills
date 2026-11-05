@@ -575,12 +575,12 @@ Files this month
   3 used of 100 · 97 left
 
 Upload
-  █░░░░░░░░░░░░░░░░░░░  2%
-  1.2 GB used of 50 GB · 48.8 GB left
+  ██░░░░░░░░░░░░░░░░░░  12%
+  6 GB used of 50 GB · 44 GB left
 
 Download
-  █░░░░░░░░░░░░░░░░░░░  1%
-  300 MB used of 50 GB · 49.7 GB left
+  █░░░░░░░░░░░░░░░░░░░  5%
+  2.5 GB used of 50 GB · 47.5 GB left
 
 Resets on 12/01/2026
 
@@ -619,12 +619,12 @@ When the language is `ja`, use exactly this wording:
   3 件使用 / 全体 100 件 · 残り 97 件
 
 アップロード
-  █░░░░░░░░░░░░░░░░░░░  2%
-  1.2 GB 使用 / 全体 50 GB · 残り 48.8 GB
+  ██░░░░░░░░░░░░░░░░░░  12%
+  6 GB 使用 / 全体 50 GB · 残り 44 GB
 
 ダウンロード
-  █░░░░░░░░░░░░░░░░░░░  1%
-  300 MB 使用 / 全体 50 GB · 残り 49.7 GB
+  █░░░░░░░░░░░░░░░░░░░  5%
+  2.5 GB 使用 / 全体 50 GB · 残り 47.5 GB
 
 リセット日 2026/12/01
 
