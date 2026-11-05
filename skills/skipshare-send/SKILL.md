@@ -17,6 +17,11 @@ pass `--json`:
 npx -y @skipshare/cli@1 <command> ... --json
 ```
 
+On macOS / Linux, when `node` or `npx` is not found, run the command through the user's login shell
+before treating Node.js as missing: `"$SHELL" -lic 'npx -y @skipshare/cli@1 <command> ... --json'`.
+The agent's shell can keep an older `PATH` than the user's terminal (nvm, Vite+, volta). When that
+works, run every command of this share the same way.
+
 - CLI requirement: Node.js 20 or newer, `@skipshare/cli` 1.x.
 - With `--json`, stdout holds exactly one JSON object. On success it is the result; a real send
   returns `folder_key` and `share_url`. On failure it is
@@ -52,7 +57,7 @@ Run `npx -y @skipshare/cli@1 login status --json`.
 
 - Exit 0: logged in. `email` is the user's own SkipShare account. `default_team` is the owner email
   of the team used when `--team` is left out, or `null` when sends go out personally.
-- `node` or `npx` not found, Node.js older than 20, or exit 3 with `error.code` `not_authenticated` (no token saved here): SkipShare is not ready on this computer. **Suggest** the setup and stop; never
+- `node` or `npx` not found (also through the login shell), Node.js older than 20, or exit 3 with `error.code` `not_authenticated` (no token saved here): SkipShare is not ready on this computer. **Suggest** the setup and stop; never
   start it, install anything or open a login on your own. List only what is missing, then wait:
 
   ```text
