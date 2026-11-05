@@ -468,21 +468,24 @@
     {
       "id": 44,
       "prompt": "send report.pdf to a@example.com, subject Q3, message hi, 7 days, yes  (send exits 0 with usage.storage {used: 10200547328, limit: 10737418240, remaining: 536870912})",
-      "expected_output": "Success card with a compact Usage section inside it: one Storage line at 95% with a warning mark. No separate box.",
+      "expected_output": "Success card with a compact 3-line usage (Storage, Files, Upload) inside it; no Download, bars or reset date.",
       "expectations": [
         "Shows the success block with the Download URL",
-        "Has a `Usage` section inside the same block with one line `Storage  95% · 9.5 GB / 10 GB ⚠️`",
-        "Draws no bar, no separate `📊 Usage` box and no right-hand border",
+        "Inside the same block shows `📊 Usage` with exactly `Storage`, `Files` and `Upload` lines in `used / limit` form, right-aligned",
+        "Storage line reads `9.5 GB / 10 GB` with a `⚠️`",
+        "Has no Download line, no bars, no reset date and no right-hand border",
         "Does not print the JSON"
       ]
     },
     {
       "id": 46,
       "prompt": "send report.pdf to a@example.com, 7 days, yes  (send exits 0 with usage.storage {used: 1073741824, limit: 10737418240, remaining: 9663676416}, usage.monthly_files {used: 3, limit: 100, remaining: 97}, usage.monthly_upload {used: 6442450944, limit: 53687091200, remaining: 47244640256}, usage.monthly_download {used: 2684354560, limit: 53687091200, remaining: 51002736640}, usage.reset_at 2026-12-01T00:00:00.000Z)",
-      "expected_output": "All quotas under 70%: the success card has no Usage section at all.",
+      "expected_output": "Compact usage with the shared-unit rule: Upload `6 / 50 GB`, Storage `1 GB / 10 GB`, Files `3 / 100`.",
       "expectations": [
         "Shows the success block with the Download URL",
-        "Has no `Usage` section, bar, reset date or separate usage box, because every quota is below 70%",
+        "Compact usage has `Storage  1 GB / 10 GB`, `Files  3 / 100` and `Upload  6 / 50 GB`, values ending in the same column",
+        "Writes the unit once when used and limit share it (`6 / 50 GB`, not `6 GB / 50 GB`)",
+        "Has no Download line, no bars and no reset date",
         "Does not print the JSON"
       ]
     },
@@ -492,10 +495,10 @@
       "expected_output": "Full Usage box: Storage, Files this month, Upload, Download bars with `used / limit` wording, and a Resets on line.",
       "expectations": [
         "Runs `skipshare usage --json`, not a send or dry run",
-        "Shows a `📊 Usage` box with four sections, each a 20-cell bar with a percent",
-        "Storage reads `1 GB / 10 GB` with 10%, Files `12 / 50`, Upload `6 GB / 50 GB` with 2 filled cells, Download `2.5 GB / 50 GB` with 1 filled cell",
+        "Shows a `📊 Usage` box with Storage, Files, Upload and Download, each with a 20-cell bar and a percent",
+        "Storage reads `1 GB / 10 GB`, Files `12 / 50`, Upload `6 / 50 GB` with 2 filled cells, Download `2.5 / 50 GB` with 1 filled cell",
         "Has no `left` or `remaining` wording and no right-hand border",
-        "Ends with `Resets on 12/01/2026`"
+        "Ends with `↻ Resets Dec 1, 2026`"
       ]
     }
   ]
