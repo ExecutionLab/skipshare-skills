@@ -613,7 +613,6 @@ those are in the full box from `skipshare usage`.
   ASCII-width characters in the label column when you can; never draw a right border.
 - `limit` `null`: `<used> / no limit` (`ja`: `<used> / 上限なし`). A missing or `null` quota: leave
   out only that line; all missing: leave out the whole usage part.
-- At 90% or more used, add `⚠️` at the end of that line.
 - Sizes use 1024-based units, one decimal at most, dropping `.0`.
 
 The date in brackets is when the link stops working, in this computer's local time. SkipShare sets
@@ -672,7 +671,6 @@ Download         2.5 / 50 GB
   Never write `<1%`: a value under 0.5% shows `0%` with no filled cell, as the web usage box does.
 - **`limit` is `null`** (no limit): no bar, one line `No limit (<used> used)` (`ja`:
   `上限なし（<used> 使用中）`).
-- **90% or more:** put `⚠️` after the percent.
 - **Reset line:** `↻ Resets <Mon D, YYYY>` from `reset_at`, local date only, no time. Leave it out when
   `reset_at` is `null`.
 - Leave out a section whose value is `null`; show only what the CLI returned.
