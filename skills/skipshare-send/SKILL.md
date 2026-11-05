@@ -560,7 +560,7 @@ Download URL
 ```
 
 Then, inside the same ` ```text ` block after a blank line, the compact usage (rules after the `ja`
-block). It has no Download line:
+block):
 
 ```text
 📊 Usage
@@ -568,6 +568,7 @@ block). It has no Download line:
 Storage      508 KB / 10 GB
 Files             3 / 100
 Upload          6 / 50 GB
+Download     2.5 / 50 GB
 ```
 
 When the language is `ja`, use exactly this wording:
@@ -596,14 +597,15 @@ When the language is `ja`, use exactly this wording:
 ストレージ    508 KB / 10 GB
 ファイル数         3 / 100
 アップロード     6 / 50 GB
+ダウンロード  2.5 / 50 GB
 ```
 
-**Compact usage in the card.** The success card is the main message, so usage stays three short
+**Compact usage in the card.** The success card is the main message, so usage stays four short
 lines. It is read from the send result: `usage.storage`, `usage.monthly_files` and
-`usage.monthly_upload` (`{ used, limit, remaining }`). No Download, no bars, no reset date here;
+`usage.monthly_upload` and `usage.monthly_download` (`{ used, limit, remaining }`). No bars, no reset date here;
 those are in the full box from `skipshare usage`.
 
-- Always show it, labels `Storage`, `Files`, `Upload` (`ja`: `ストレージ`, `ファイル数`, `アップロード`).
+- Always show it, labels `Storage`, `Files`, `Upload`, `Download` (`ja`: `ストレージ`, `ファイル数`, `アップロード`, `ダウンロード`).
 - Value is `<used> / <limit>`. When used and limit have the same unit, write the unit once, after
   the limit: `6 / 50 GB`, `2.5 / 50 GB`; different units keep both: `508 KB / 10 GB`. Files are plain
   numbers: `3 / 100`.
@@ -649,7 +651,7 @@ bar below each, same unit rule as the compact one: `6 / 50 GB`):
 📊 Usage
 ────────────────────────────
 Storage         508 KB / 10 GB
-░░░░░░░░░░░░░░░░░░░░  <1%
+░░░░░░░░░░░░░░░░░░░░  0%
 
 Files                3 / 100
 █░░░░░░░░░░░░░░░░░░░  3%
@@ -667,7 +669,7 @@ Download         2.5 / 50 GB
 
 - **The bar** is exactly 20 cells: `█` for used, `░` for free. Percent is `used / limit`, rounded
   to a whole number. Filled cells are `round(percent / 5)`, so the cells and the number agree.
-  Below 1% but above 0, write `<1%` and fill no cell. At 0 write `0%`.
+  Never write `<1%`: a value under 0.5% shows `0%` with no filled cell, as the web usage box does.
 - **`limit` is `null`** (no limit): no bar, one line `No limit (<used> used)` (`ja`:
   `上限なし（<used> 使用中）`).
 - **90% or more:** put `⚠️` after the percent.

@@ -468,12 +468,12 @@
     {
       "id": 44,
       "prompt": "send report.pdf to a@example.com, subject Q3, message hi, 7 days, yes  (send exits 0 with usage.storage {used: 10200547328, limit: 10737418240, remaining: 536870912})",
-      "expected_output": "Success card with a compact 3-line usage (Storage, Files, Upload) inside it; no Download, bars or reset date.",
+      "expected_output": "Success card with a compact usage inside it (only the quotas the send returned); no bars or reset date.",
       "expectations": [
         "Shows the success block with the Download URL",
         "Inside the same block shows `📊 Usage` with exactly `Storage`, `Files` and `Upload` lines in `used / limit` form, right-aligned",
         "Storage line reads `9.5 GB / 10 GB` with a `⚠️`",
-        "Has no Download line, no bars, no reset date and no right-hand border",
+        "Has no bars, no reset date and no right-hand border",
         "Does not print the JSON"
       ]
     },
@@ -483,9 +483,9 @@
       "expected_output": "Compact usage with the shared-unit rule: Upload `6 / 50 GB`, Storage `1 GB / 10 GB`, Files `3 / 100`.",
       "expectations": [
         "Shows the success block with the Download URL",
-        "Compact usage has `Storage  1 GB / 10 GB`, `Files  3 / 100` and `Upload  6 / 50 GB`, values ending in the same column",
+        "Compact usage has `Storage  1 GB / 10 GB`, `Files  3 / 100`, `Upload  6 / 50 GB` and a `Download` line, values ending in the same column",
         "Writes the unit once when used and limit share it (`6 / 50 GB`, not `6 GB / 50 GB`)",
-        "Has no Download line, no bars and no reset date",
+        "Has no bars and no reset date",
         "Does not print the JSON"
       ]
     },
