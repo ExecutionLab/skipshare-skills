@@ -137,6 +137,17 @@
         "Shows the example `/skipshare-send report.pdf to a@example.com, cc b@example.com, expire in 3 days, subject \"Q3 report\"`",
         "Runs no `send` command"
       ]
+    },
+    {
+      "id": 14,
+      "prompt": "skipshare init  (Node v22, `skipshare --version` prints 1.0.0-dev.12, not logged in)",
+      "expected_output": "Treats the dev build as missing: the confirm lists the CLI install, and it never runs `skipshare update` on the dev build.",
+      "expectations": [
+        "Does not run `skipshare update` on the `-dev.` build",
+        "Checks login with `npx -y @skipshare/cli@1 login status --json`, not the dev build",
+        "The confirm lists `SkipShare CLI: install @skipshare/cli` and the login",
+        "After **ok**, runs `npm install -g @skipshare/cli@1`"
+      ]
     }
   ]
 }

@@ -43,12 +43,13 @@ Run these quietly, before saying anything:
 - `node -v`: Node.js is ready when it prints `v20` or newer. Missing or older: it needs an install
   or an update.
 - `skipshare --version`: the CLI is installed globally when this prints a version. Then run
-  `skipshare update --json` to bring it to the newest release. A CLI older than 0.1.2 has no
-  `update` command: run `npm install -g @skipshare/cli@1` instead. If either fails, carry on with
-  the installed version.
+  `skipshare update --json` to bring it to the newest release; if it fails, carry on with the
+  installed version. A version with `-dev.` (e.g. `1.0.0-dev.12`) is an internal test build that
+  talks to the test server, not SkipShare: treat the CLI as missing, so step 3 installs the npm
+  release over it, and do not run `skipshare update` on it.
 - `skipshare login status --json` (or `npx -y @skipshare/cli@1 login status --json` when the CLI is
-  not installed but Node.js is ready): exit 0 means logged in, and `email` is the account. Exit 3
-  means not logged in; keep `error.data.token_page_url` for step 5.
+  missing or a `-dev.` build, and Node.js is ready): exit 0 means logged in, and `email` is the
+  account. Exit 3 means not logged in; keep `error.data.token_page_url` for step 5.
 
 In the rest of this skill, `skipshare` means the global command when it is installed, and
 `npx -y @skipshare/cli@1` otherwise. Always pass `--json`.

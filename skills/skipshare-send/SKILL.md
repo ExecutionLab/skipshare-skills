@@ -17,7 +17,7 @@ pass `--json`:
 npx -y @skipshare/cli@1 <command> ... --json
 ```
 
-- CLI requirement: Node.js 20 or newer, `@skipshare/cli` 0.x.
+- CLI requirement: Node.js 20 or newer, `@skipshare/cli` 1.x.
 - With `--json`, stdout holds exactly one JSON object. On success it is the result; a real send
   returns `folder_key` and `share_url`. On failure it is
   `{"error": {"code": "...", "message": "...", "status": 409, "data": {...}}}`; `status` is `null`
@@ -402,8 +402,7 @@ Take the numbers from `error.data` when it is there, and from `error.message` ot
 | `idempotency_in_progress` (7)                | Do not reply yet: wait a minute and run the same command yourself once.                               |                                                                                                |
 | anything else                                | Couldn't send: [first sentence of `error.message`].                                                   | Reply **retry**, or **details** to see the full error.                                         |
 
-`cli_upgrade_required`, after **ok**: run `npx -y @skipshare/cli@1 update --json` (a CLI older than
-0.1.2 has no `update` command; run `npm install -g @skipshare/cli@1` instead), then run the dry run
+`cli_upgrade_required`, after **ok**: run `npx -y @skipshare/cli@1 update --json`, then run the dry run
 again and show the card. Keep the draft. If the update fails (`update_failed`, exit 13), say
 `Couldn't update the SkipShare CLI.` and give `npm install -g @skipshare/cli@1` to run in their
 own terminal.
