@@ -557,9 +557,24 @@ Expires in
 
 Download URL
   https://…/files/abc123
+```
 
-Storage left
-  512 MB of 10 GB
+Then, as a second ` ```text ` block right below it, the Usage box (rules after the `ja` blocks):
+
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━
+📊 Usage
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+Storage
+  ░░░░░░░░░░░░░░░░░░░░  <1%
+  508 KB used of 10 GB · 9.5 GB left
+
+Files this month
+  █░░░░░░░░░░░░░░░░░░░  3%
+  3 used of 100 · 97 left
+
+━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 When the language is `ja`, use exactly this wording:
@@ -578,16 +593,39 @@ When the language is `ja`, use exactly this wording:
 
 ダウンロード URL
   https://…/files/abc123
-
-残り容量
-  512 MB（全体 10 GB）
 ```
 
-`Storage left` comes from `usage.storage` in the send result (`remaining` and `limit`, in bytes).
-Show sizes with 1024-based units, one decimal at most, dropping `.0`: `512 MB`, `9.5 GB`. When
-`limit` is `null` the plan has no storage limit: write `No limit (<used> used)` (`ja`:
-`上限なし（<used> 使用中）`). Leave the whole `Storage left` block out when `usage` or
-`usage.storage` is missing or `null`: the share was still sent.
+```text
+━━━━━━━━━━━━━━━━━━━━━━━━
+📊 利用状況
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+ストレージ
+  ░░░░░░░░░░░░░░░░░░░░  <1%
+  508 KB 使用 / 全体 10 GB · 残り 9.5 GB
+
+今月のファイル数
+  █░░░░░░░░░░░░░░░░░░░  3%
+  3 件使用 / 全体 100 件 · 残り 97 件
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Usage box.** The numbers come from `usage.storage` (bytes) and `usage.monthly_files` (a count) in
+the send result; each is `{ used, limit, remaining }`. Show sizes with 1024-based units, one
+decimal at most, dropping `.0`: `508 KB`, `9.5 GB`.
+
+- **Never draw a right border or a box frame.** Emoji and Japanese text are wider than one
+  column, so a right edge never lines up. Use only the `━` rules shown, like the Share card.
+- **The bar** is exactly 20 cells: `█` for used, `░` for free. Percent is `used / limit`, rounded
+  to a whole number. Filled cells are `round(percent / 5)`, so the cells and the number agree.
+  Below 1% but above 0, write `<1%` and fill no cell. At 0 write `0%`.
+- **`limit` is `null`** (no limit): no bar, one line `No limit (<used> used)` (`ja`:
+  `上限なし（<used> 使用中）`).
+- **90% or more:** put `⚠️` after the percent.
+- **Missing data:** leave out the section whose value is missing or `null`; when both are missing
+  leave out the whole box. The share was still sent. Show only what the CLI returned: do not add
+  upload or download counts, the result has none.
 
 The date in brackets is when the link stops working, in this computer's local time. SkipShare sets
 it to the send time plus the chosen days, so compute it right after the send succeeds (`N` is the

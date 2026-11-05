@@ -468,10 +468,11 @@
     {
       "id": 44,
       "prompt": "send report.pdf to a@example.com, subject Q3, message hi, 7 days, yes  (send exits 0 with usage.storage {used: 10200547328, limit: 10737418240, remaining: 536870912})",
-      "expected_output": "Normal success block ending with a Storage left section: 512 MB of 10 GB.",
+      "expected_output": "Normal success block, then a separate Usage box with a 20-cell storage bar at 95% and 512 MB left.",
       "expectations": [
         "Shows the success block with the Download URL",
-        "Ends the block with `Storage left` and `512 MB of 10 GB`",
+        "Shows a separate `📊 Usage` block with a `Storage` bar of 20 `█`/`░` cells and `95%` with a warning mark",
+        "Says `512 MB left` of 10 GB, and has no right-hand border",
         "Does not print the JSON"
       ]
     },
