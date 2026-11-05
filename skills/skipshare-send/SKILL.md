@@ -574,6 +574,16 @@ Files this month
   █░░░░░░░░░░░░░░░░░░░  3%
   3 used of 100 · 97 left
 
+Upload
+  █░░░░░░░░░░░░░░░░░░░  2%
+  1.2 GB used of 50 GB · 48.8 GB left
+
+Download
+  █░░░░░░░░░░░░░░░░░░░  1%
+  300 MB used of 50 GB · 49.7 GB left
+
+Resets on 12/01/2026
+
 ━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -608,11 +618,23 @@ When the language is `ja`, use exactly this wording:
   █░░░░░░░░░░░░░░░░░░░  3%
   3 件使用 / 全体 100 件 · 残り 97 件
 
+アップロード
+  █░░░░░░░░░░░░░░░░░░░  2%
+  1.2 GB 使用 / 全体 50 GB · 残り 48.8 GB
+
+ダウンロード
+  █░░░░░░░░░░░░░░░░░░░  1%
+  300 MB 使用 / 全体 50 GB · 残り 49.7 GB
+
+リセット日 2026/12/01
+
 ━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**Usage box.** The numbers come from `usage.storage` (bytes) and `usage.monthly_files` (a count) in
-the send result; each is `{ used, limit, remaining }`. Show sizes with 1024-based units, one
+**Usage box.** It mirrors the usage box in the SkipShare web app. The numbers come from the send
+result: `usage.storage`, `usage.monthly_upload` and `usage.monthly_download` (bytes), and
+`usage.monthly_files` (a count); each is `{ used, limit, remaining }`. `usage.reset_at` is when
+the monthly numbers reset. Show sizes with 1024-based units, one
 decimal at most, dropping `.0`: `508 KB`, `9.5 GB`.
 
 - **Never draw a right border or a box frame.** Emoji and Japanese text are wider than one
@@ -623,9 +645,11 @@ decimal at most, dropping `.0`: `508 KB`, `9.5 GB`.
 - **`limit` is `null`** (no limit): no bar, one line `No limit (<used> used)` (`ja`:
   `上限なし（<used> 使用中）`).
 - **90% or more:** put `⚠️` after the percent.
-- **Missing data:** leave out the section whose value is missing or `null`; when both are missing
-  leave out the whole box. The share was still sent. Show only what the CLI returned: do not add
-  upload or download counts, the result has none.
+- **Reset line:** `Resets on <date>` (`ja`: `リセット日 <date>`) from `usage.reset_at`, local date
+  only, no time, in the date format above. Leave it out when `reset_at` is `null`.
+- **Missing data:** leave out the section whose value is missing or `null` (an older server leaves
+  `monthly_upload`, `monthly_download` and `reset_at` out); when all are missing leave out the
+  whole box. The share was still sent. Show only what the CLI returned.
 
 The date in brackets is when the link stops working, in this computer's local time. SkipShare sets
 it to the send time plus the chosen days, so compute it right after the send succeeds (`N` is the
@@ -651,9 +675,10 @@ Never offer **retry** here: the share exists, and sending again makes a second o
 
 When the user asks how much storage or how many files they have left, run
 `skipshare usage --json` (add `--team <owner_email|personal>` when they name a team; without it the
-numbers are for the team their sends go from). It returns `{ team, storage, monthly_files }`, each
-`{ used, limit, remaining }`; `limit` `null` means no limit, and `storage` `null` means the server
-can't read it right now. Answer in one or two lines, e.g. `512 MB of 10 GB storage left · 38 of 50
+numbers are for the team their sends go from). It returns `{ team, storage, monthly_files, monthly_upload,
+monthly_download, reset_at }`, each quota `{ used, limit, remaining }`; `limit` `null` means no
+limit, and `storage` `null` means the server can't read it right now (`monthly_upload` and
+`monthly_download` are `null` on an older server). Answer in one or two lines, e.g. `512 MB of 10 GB storage left · 38 of 50
 files left this month.` Exit 4 `team_not_found`: list the teams as in Team errors.
 
 ## Handling each failure (for you, not for the user)
