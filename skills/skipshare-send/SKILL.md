@@ -98,7 +98,8 @@ Run `npx -y @skipshare/cli@1 login status --json`.
   - **ok** (also yes/done): the new token is on the clipboard. Log in exactly as step 5 of the
     skipshare-setup skill does after its **ok**: pipe the clipboard into `skipshare login --json`,
     never print it. Install nothing, and do not ask the language or default team again. Exit 0:
-    say "✅ Logged in as `<email>`." and go straight back to this share, keeping every file,
+    say "✅ Token saved on this computer. You're logged in as `<email>`." (`ja`: as in skipshare-setup)
+    and go straight back to this share, keeping every file,
     recipient and field the user already gave. Token rejected again: "❌ That token isn't valid.
     Copy the whole token again (or create a new one), then reply **ok**."
   - **N**: `Share cancelled. No files were sent.`
@@ -556,6 +557,18 @@ Download URL
   https://…/files/abc123
 ```
 
+Then, inside the same ` ```text ` block after a blank line, the compact usage (rules after the `ja`
+block):
+
+```text
+📊 Usage
+────────────────────────────
+Storage      508 KB / 10 GB
+Files             3 / 100
+Upload          6 / 50 GB
+Download     2.5 / 50 GB
+```
+
 When the language is `ja`, use exactly this wording:
 
 ```text
@@ -573,6 +586,32 @@ When the language is `ja`, use exactly this wording:
 ダウンロード URL
   https://…/files/abc123
 ```
+
+`ja` compact usage (same place, same alignment):
+
+```text
+📊 利用状況
+────────────────────────────
+ストレージ    508 KB / 10 GB
+ファイル数         3 / 100
+アップロード     6 / 50 GB
+ダウンロード  2.5 / 50 GB
+```
+
+**Compact usage in the card.** The success card is the main message, so usage stays four short
+lines. It is read from the send result: `usage.storage`, `usage.monthly_files` and
+`usage.monthly_upload` and `usage.monthly_download` (`{ used, limit, remaining }`). No bars, no reset date here;
+those are in the full box from `skipshare usage`.
+
+- Always show it, labels `Storage`, `Files`, `Upload`, `Download` (`ja`: `ストレージ`, `ファイル数`, `アップロード`, `ダウンロード`).
+- Value is `<used> / <limit>`. When used and limit have the same unit, write the unit once, after
+  the limit: `6 / 50 GB`, `2.5 / 50 GB`; different units keep both: `508 KB / 10 GB`. Files are plain
+  numbers: `3 / 100`.
+- Pad so the values end in the same column (right-aligned, longest value sets the width). Use only
+  ASCII-width characters in the label column when you can; never draw a right border.
+- `limit` `null`: `<used> / no limit` (`ja`: `<used> / 上限なし`). A missing or `null` quota: leave
+  out only that line; all missing: leave out the whole usage part.
+- Sizes use 1024-based units, one decimal at most, dropping `.0`.
 
 The date in brackets is when the link stops working, in this computer's local time. SkipShare sets
 it to the send time plus the chosen days, so compute it right after the send succeeds (`N` is the
@@ -593,6 +632,48 @@ not claim the email has arrived. Exit 11 (saved, email failed) replaces the firs
 `⚠️ Shared, but the email to recipients failed.` (`ja`: `⚠️ 共有は完了しましたが、宛先へのメール送信に失敗しました。`)
 and adds, after the block: `Send them the link yourself.` (`ja`: `お手数ですが、ダウンロード URL を宛先に直接お送りください。`)
 Never offer **retry** here: the share exists, and sending again makes a second one.
+
+## Storage left, without sending
+
+When the user asks about their usage, storage, or how much they have left, run
+`skipshare usage --json` (add `--team <owner_email|personal>` when they name a team; without it the
+numbers are for the team their sends go from). It returns `{ team, storage, monthly_files, monthly_upload,
+monthly_download, reset_at }`, each quota `{ used, limit, remaining }`; `limit` `null` means no
+limit, and `storage` `null` means the server can't read it right now (`monthly_upload`,
+`monthly_download` and `reset_at` are `null` on an older server). Exit 4 `team_not_found`: list the
+teams as in Team errors. Answer with the full Usage box, the same as the usage box in the web app (values right-aligned,
+bar below each, same unit rule as the compact one: `6 / 50 GB`):
+
+```text
+📊 Usage
+────────────────────────────
+Storage         508 KB / 10 GB
+░░░░░░░░░░░░░░░░░░░░  0%
+
+Files                3 / 100
+█░░░░░░░░░░░░░░░░░░░  3%
+
+Upload             6 / 50 GB
+██░░░░░░░░░░░░░░░░░░  12%
+
+Download         2.5 / 50 GB
+█░░░░░░░░░░░░░░░░░░░  5%
+
+↻ Resets Dec 1, 2026
+```
+
+`ja`: title `📊 利用状況`, labels `ストレージ`, `ファイル数`, `アップロード`, `ダウンロード`, and `↻ リセット日 2026/12/01`.
+
+- **The bar** is exactly 20 cells: `█` for used, `░` for free. Percent is `used / limit`, rounded
+  to a whole number. Filled cells are `round(percent / 5)`, so the cells and the number agree.
+  Never write `<1%`: a value under 0.5% shows `0%` with no filled cell, as the web usage box does.
+- **`limit` is `null`** (no limit): no bar, one line `No limit (<used> used)` (`ja`:
+  `上限なし（<used> 使用中）`).
+- **Reset line:** `↻ Resets <Mon D, YYYY>` from `reset_at`, local date only, no time. Leave it out when
+  `reset_at` is `null`.
+- Leave out a section whose value is `null`; show only what the CLI returned.
+- Never draw a right border (emoji and Japanese text are wider than one column). Sizes use
+  1024-based units, one decimal at most, dropping `.0`.
 
 ## Handling each failure (for you, not for the user)
 
