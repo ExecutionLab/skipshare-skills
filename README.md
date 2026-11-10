@@ -1,5 +1,7 @@
 # SkipShare skills
 
+[SkipShare](https://share.skipapp.jp/?utm_source=github&utm_medium=referral&utm_campaign=skills_repo) is a secure file transfer service. Recipients download with a one-time email code, with no account needed, and can reply with files.
+
 Agent skills that let coding agents (Claude Code, Cursor, Codex and others) set up
 [SkipShare](https://www.npmjs.com/package/@skipshare/cli) and send files by email for you. You ask
 in plain words ("send report.pdf to a@example.com"); the agent drives the `@skipshare/cli`
@@ -183,7 +185,7 @@ and links stay as they are.
 
 - Node.js 20 or newer. `skipshare init` installs or updates it.
 - A SkipShare account.
-- A personal access token, created in the web app under **Settings → Personal access tokens**.
+- A personal access token, created in the web app under **Settings → Access Tokens**.
   `skipshare init` walks you through it.
 
 `skipshare-send` runs the CLI as `npx -y @skipshare/cli@1`, so a global install is optional.
