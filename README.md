@@ -1,5 +1,7 @@
 # SkipShare skills
 
+[SkipShare](https://share.skipapp.jp/?utm_source=github&utm_medium=referral&utm_campaign=skills_repo) is a secure file transfer service. Recipients download with a one-time email code, with no account needed, and can reply with files.
+
 > **Dev branch.** These skills drive the dev build of the CLI, which talks to the dev server and is
 > installed from `https://te-fsharing-dev-cli.s3.ap-northeast-1.amazonaws.com/skipshare-cli-latest.tgz`, not from npm. The release skills are on `main`.
 
@@ -186,7 +188,7 @@ and links stay as they are.
 
 - Node.js 20 or newer. `skipshare init` installs or updates it.
 - A SkipShare account.
-- A personal access token, created in the web app under **Settings → Personal access tokens**.
+- A personal access token, created in the web app under **Settings → Access Tokens**.
   `skipshare init` walks you through it.
 
 `skipshare-send` runs the global `skipshare` command, so the dev build must be installed.
